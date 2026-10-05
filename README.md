@@ -47,7 +47,7 @@ obj.find_map ('counts').lookup (0)
 
 ## Documentation
 
-Check out document: [octave_ffmpeg_free Document](https://cnoctave.github.io/octave_ffmpeg_free/index.html)
+Check out document: [octave_libbpf Document](https://cnoctave.github.io/octave_libbpf/index.html)
 * `docs/index.html` — the Chinese documentation site (open it in a browser):
   installation, dependencies, a full API reference for every `bpf.*` class and
   function, worked examples, implementation notes and the test suite.
