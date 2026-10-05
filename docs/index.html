@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!--
+Copyright 2024-2026 Yu Hongbo <yuhongbo@member.fsf.org>, 
+  CNOCTAVE <cnoctave@qq.com>
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.  This file is offered as-is,
+without any warranty.
+-->
+<head>
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
+    <meta name="theme-color" content="#00B4FF">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="msapplication-TileImage" content="favicon.ico">
+    <meta name="msapplication-TileColor" content="#000000">
+    <meta name="apple-mobile-web-app-title" content="octave_libbpf文档">
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet" type="text/css">
+    <link href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet" type="text/css">
+    <link href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@^4.0.0/animate.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/quasar@2.17.0/dist/quasar.prod.css" rel="stylesheet" type="text/css">
+    <link href="main.css" rel="stylesheet" type="text/css">
+    <title>octave_libbpf文档</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <meta name="title" content="octave_libbpf文档" data-qmeta="title">
+    <meta property="og:title" content="octave_libbpf文档" data-qmeta="ogTitle">
+    <meta name="twitter:title" content="octave_libbpf文档" data-qmeta="twitterTitle">
+    <meta name="description" content="octave_libbpf 是 GNU Octave 的 libbpf 封装，让你可以直接用 Octave 函数编写、加载、挂载并调试 eBPF 程序。"
+        data-qmeta="description">
+    <meta property="og:description" content="octave_libbpf 是 GNU Octave 的 libbpf 封装，让你可以直接用 Octave 函数编写、加载、挂载并调试 eBPF 程序。"
+        data-qmeta="ogDesc">
+    <meta name="twitter:description" content="octave_libbpf 是 GNU Octave 的 libbpf 封装，让你可以直接用 Octave 函数编写、加载、挂载并调试 eBPF 程序。"
+        data-qmeta="twitterDesc">
+</head>
+
+<body>
+    <div id="q-app">
+        <q-layout view="hHh LpR fFf">
+            <q-header elevated class="bg-primary text-white">
+                <q-toolbar class="bg-primary text-white q-ny-md shadow-2">
+                    <q-btn stretch flat label="Octave中文网" @click="goTo('https://cnoctave.top')"></q-btn>
+                    <q-separator dark vertical></q-separator>
+                    <q-btn stretch flat label="octave_libbpf文档" @click="scrollToTop()"></q-btn>
+                    <q-separator dark vertical></q-separator>
+                    <q-space></q-space>
+                    <q-separator dark vertical></q-separator>
+                    <q-btn-dropdown stretch flat icon="translate" label="切换文档语言">
+                      <q-list>
+                        <q-item clickable v-close-popup @click="goTo('index.html')">
+                          <q-item-section>
+                            <q-item-label>zh-CN 简体中文</q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+                    </q-btn-dropdown>
+                    <q-separator dark vertical></q-separator>
+                    <q-btn stretch flat label="中文版Octave文档" @click="goTo('https://docs.cnoctave.top')"></q-btn>
+                    <q-separator dark vertical></q-separator>
+                    <q-btn stretch flat label="学术交流论坛" @click="goTo('https://forum.cnoctave.top')"></q-btn>
+                    <q-separator dark vertical></q-separator>
+                    <q-btn stretch flat label="新闻" @click="goTo('https://octave.org/news.html')"></q-btn>
+                    <q-separator dark vertical></q-separator>
+                    <q-btn stretch flat label="使用方法" @click="goTo('https://wiki.octave.org/Using_Octave')"></q-btn>
+                    <q-separator dark vertical></q-separator>
+                    <q-btn stretch flat label="免费下载" @click="goTo('https://octave.org/download')"></q-btn>
+                </q-toolbar>
+            </q-header>
+
+            <q-drawer class="bg-primary" show-if-above v-model="leftDrawerOpen" side="left" bordered elevated>
+                <q-list class="title1 text-white bg-primary">
+                    <q-item clickable v-ripple @click="goToID('#homepage')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            项目首页
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="goToID('#features')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            功能特性
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="goToID('#repo_install')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            软件源安装
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="goToID('#online_install')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            在线安装
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="goToID('#source_code_install')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            源码安装
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="goToID('#how_to_use')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            如何使用
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="goToID('#dependencies')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            依赖库
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="goToID('#authoring')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            用Octave编写eBPF程序
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="goToID('#function_usage')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            函数用法
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="goToID('#common_examples')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            常见用例
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="goToID('#design')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            实现原理
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="goToID('#tests')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            测试
+                        </q-item-section>
+                    </q-item>
+                    <q-item clickable v-ripple @click="goToID('#references')">
+                        <q-item-section avatar>
+                            <q-icon name="help" />
+                        </q-item-section>
+                        <q-item-section>
+                            引用octave_libbpf
+                        </q-item-section>
+                    </q-item>
+                </q-list>
+            </q-drawer>
+
+            <q-page-container>
+                <div style="position: relative;">
+                    <q-img src="banner0.png" spinner-color="white" style="width: 100%; height: 300px;"></q-img>
+                    <div class="q-mx-md rainbow-text"
+                        style="line-height: 300px; font-size: 100px; position: absolute; left: 0%; top: 0%;">octave_libbpf文档
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="main">
+                        <div class="text-h5 q-ma-md text-red-10">欢迎广大开发者将此文档翻译为其他语言。</div>
+                        <q-btn id="homepage" class="title1 text-white bg-primary" stretch flat
+                            label="项目首页：https://github.com/CNOCTAVE/octave_libbpf" @click="goTo('https://github.com/CNOCTAVE/octave_libbpf')"></q-btn>
+
+                        <p class="q-ma-md">octave_libbpf 是 GNU Octave 的 libbpf 封装。它把 eBPF 的参考用户态库 libbpf 完整地暴露给 Octave，
+                            并在其之上用纯 m 代码实现了一整套 eBPF 工具链：指令编码器与汇编器、BTF 类型编码器、以及 ELF64/BPF 目标文件写出器。
+                            因此你可以在 Octave 命令行里直接编写、汇编、加载、挂载、检查并驱动 eBPF 程序，既不需要 clang，也不需要写一行 C 代码。
+                            此外，octave_libbpf 还可以直接运行由其他工具生成的 eBPF 程序。</p>
+                        <q-separator></q-separator>
+
+                        <div id="features" class="title1 q-ma-md text-primary">功能特性</div>
+                        <div class="text-h5 q-ma-md text-red-10">一、完整的 libbpf 绑定</div>
+                        <p class="q-ma-md">src/libbpf_wrap.cc 编译出的 libbpf_wrap.oct 提供 <b>182</b> 个子命令，覆盖 libbpf 的全部主要接口：
+                            bpf_object（打开、加载、固定、遍历）、bpf_program 及其全部 attach 家族（kprobe、kprobe_multi、uprobe、
+                            uprobe_multi、tracepoint、raw_tracepoint、fentry/fexit、lsm、cgroup、netns、xdp、tcx、netkit、sockmap、
+                            freplace、netfilter、iter、usdt、perf_event、ksyscall）、bpf_map（创建、增删改查、批量、固定、信息）、
+                            bpf_link、ring buffer、perf buffer、BTF（解析、遍历、加载、反汇编）以及低层 bpf_*() 系统调用封装。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">二、在 Octave 中编写 eBPF 程序</div>
+                        <p class="q-ma-md">bpf.Builder、bpf.Asm、bpf.Insn 覆盖 eBPF 指令集的全部助记符（ALU/ALU64、跳转、内存读写、
+                            原子操作、字节序转换、伪指令加载等），支持符号标号跳转与 map 重定位。bpf.BtfBuilder 负责生成 map 的 BTF 描述，
+                            bpf.Elf 负责生成 ELF64/BPF 目标文件，最后交给 libbpf 校验、加载并挂载，全部过程都在 Octave 内完成。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">三、面向对象的对象模型</div>
+                        <p class="q-ma-md">bpf.Object、bpf.Program、bpf.Map、bpf.Link、bpf.RingBuf、bpf.PerfBuf、bpf.BTF 让常用流程变得简洁：
+                            打开、加载、挂载、读写 map、收取 ring buffer 事件都可以用一行代码完成，对象的生命周期由 Octave 的 handle 类自动管理。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">四、同样支持 clang 编译的对象</div>
+                        <p class="q-ma-md">bpf.Object.from_file() 可以加载任何 eBPF ELF 目标文件，无论是 octave_libbpf 自己生成的，
+                            还是用 clang -target bpf 生成的。传统 libbpf 工作流可以原封不动地用 Octave 驱动。</p>
+                        <q-separator></q-separator>
+
+                        <div id="repo_install" class="title1 q-ma-md text-primary">软件源安装</div>
+                        <p class="q-ma-md">octave_libbpf 发布到 Octave Forge 软件源之后，可以通过 Octave 软件源安装。</p>
+                        <div class="text-h5 q-ma-md text-red-10">通过Octave软件源安装octave_libbpf，代码如下：</div>
+                        <p class="q-ma-md">&gt;&gt; pkg install -forge octave_libbpf</p>
+                        <div class="text-h5 q-ma-md text-red-10">注意：截至 0.1.0 版本，octave_libbpf 尚未进入 Octave Forge 软件源，
+                            请使用下面的“在线安装”或“源码安装”方式。</div>
+                        <q-separator></q-separator>
+
+                        <div id="online_install" class="title1 q-ma-md text-primary">在线安装</div>
+                        <p class="q-ma-md">octave_libbpf 可以在线安装，也可以用已经打包好的 tar.gz 安装包本地安装。</p>
+                        <div class="text-h5 q-ma-md text-red-10">在线安装octave_libbpf，代码如下：</div>
+                        <p class="q-ma-md">&gt;&gt; pkg install 'https://github.com/CNOCTAVE/octave_libbpf/releases/download/0.1.0/octave_libbpf-0.1.0.tar.gz'</p>
+                        <div class="text-h5 q-ma-md text-red-10">本地安装octave_libbpf-0.1.0.tar.gz，代码如下：</div>
+                        <p class="q-ma-md">&gt;&gt; pkg install octave_libbpf-0.1.0.tar.gz</p>
+                        <div class="text-h5 q-ma-md text-red-10">安装过程中会在 src 目录中自动探测 libbpf 的头文件与共享库，并编译 oct 文件。</div>
+                        <q-separator></q-separator>
+
+                        <div id="source_code_install" class="title1 q-ma-md text-primary">源码安装</div>
+                        <p class="q-ma-md">如果希望直接从源码树构建，可以在包目录里使用 make。</p>
+                        <div class="text-h5 q-ma-md text-red-10">构建 oct 文件：</div>
+                        <p class="q-ma-md">$ make -C octave_libbpf/src</p>
+                        <div class="text-h5 q-ma-md text-red-10">打包、安装并运行测试：</div>
+                        <p class="q-ma-md">$ make dist      # 生成 ../octave_libbpf-0.1.0.tar.gz</p>
+                        <p class="q-ma-md">$ make install   # 对该 tar 包执行 pkg install</p>
+                        <p class="q-ma-md">$ make test      # 安装并执行 pkg test octave_libbpf</p>
+                        <div class="text-h5 q-ma-md text-red-10">如果不想安装，也可以直接把源码树加入搜索路径：</div>
+                        <p class="q-ma-md">&gt;&gt; addpath ('octave_libbpf/src');</p>
+                        <p class="q-ma-md">&gt;&gt; addpath ('octave_libbpf/inst');</p>
+                        <q-separator></q-separator>
+
+                        <div id="how_to_use" class="title1 q-ma-md text-primary">如何使用</div>
+                        <div class="text-h5 q-ma-md text-red-10">在安装后，加载octave_libbpf即可使用，代码如下：</div>
+                        <p class="q-ma-md">&gt;&gt; pkg load octave_libbpf</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">查看运行环境：</div>
+                        <p class="q-ma-md">&gt;&gt; bpf.version ()          % libbpf 版本，例如 major = 1, minor = 6</p>
+                        <p class="q-ma-md">&gt;&gt; bpf.num_cpus ()          % possible CPU 数量，用于 per-CPU map</p>
+                        <p class="q-ma-md">&gt;&gt; bpf.have_bpf ()          % 当前进程是否可以加载 eBPF 程序与 map</p>
+                        <p class="q-ma-md">&gt;&gt; numel (bpf.commands ())  % 底层 libbpf_wrap 支持的子命令数量</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">运行自带演示与帮助：</div>
+                        <p class="q-ma-md">&gt;&gt; demo_octave_libbpf</p>
+                        <p class="q-ma-md">&gt;&gt; help octave_libbpf</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">权限说明：</div>
+                        <p class="q-ma-md">加载 eBPF 程序需要 CAP_BPF（5.8 之前的内核需要 CAP_SYS_ADMIN），因此通常需要以 root 运行，
+                            或者给 octave 授予相应能力。汇编、BTF/ELF 生成、类型表查询等纯用户态功能不需要任何特权。
+                            对于 5.11 之前的内核，创建较大的 map 之前还需要调用 bpf.memlock() 提高 RLIMIT_MEMLOCK。</p>
+                        <q-separator></q-separator>
+
+                        <div id="dependencies" class="title1 q-ma-md text-primary">依赖库</div>
+                        <div class="text-h5 q-ma-md text-red-10">Fedora / RHEL：</div>
+                        <p class="q-ma-md">$ sudo dnf install libbpf-devel</p>
+                        <div class="text-h5 q-ma-md text-red-10">Debian / Ubuntu：</div>
+                        <p class="q-ma-md">$ sudo apt install libbpf1-devel</p>
+
+                        <p class="q-ma-md">当系统没有安装 libbpf-devel 时，包会使用自带在 src/vendor/bpf 中的公共 libbpf 头文件进行编译，
+                            因此只需要运行时库即可。发行版常常只安装 libbpf.so.1 而没有 libbpf.so 或 libbpf.pc，
+                            构建系统会自动回退到 -l:libbpf.so.1，并允许用 LIBBPF_ROOT / LIBBPF_LIBS 覆盖探测结果。</p>
+                        <p class="q-ma-md">另外还需要 Linux 内核提供 eBPF 支持（4.x 以上，建议 5.8 以上以获得 CAP_BPF 与完整的
+                            BTF、ring buffer、kprobe_multi 等特性）。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">在其他的Linux发行版上的命令有所不同。欢迎广大开发者补充。</div>
+                        <q-separator></q-separator>
+
+                        <div id="authoring" class="title1 q-ma-md text-primary">用Octave编写eBPF程序</div>
+                        <p class="q-ma-md">下面这个程序统计 do_sys_openat2() 的调用次数，并把计数保存在一个 array map 里。
+                            整段程序由 Linux 内核校验后真正运行，没有任何 C 代码参与。</p>
+                        <pre class="q-ma-md code-block">pkg load octave_libbpf
+
+R = bpf.regs ();
+b = bpf.Builder ('GPL');
+counts = b.map ('counts', 'array', 'u32', 'u64', 8);
+
+p = b.program ('kprobe/do_sys_openat2', 'count_open');
+p.st_w (R.R10, -4, 0);                              % u32 key = 0
+p.ld_map_fd (R.R1, 'counts');                       % r1 = &amp;counts（重定位）
+p.mov64_reg (R.R2, R.R10);                          % r2 = &amp;key
+p.add64_imm (R.R2, -4);
+p.call (bpf.helper ('map_lookup_elem'));
+p.jeq_imm (R.R0, 0, 'done');                        % if (!value) goto done
+p.mov64_imm (R.R1, 1);
+p.atomic_dw (R.R0, R.R1, 0, bpf.atomic_op ('add'));  % __sync_fetch_and_add
+p.label ('done');
+p.mov64_imm (R.R0, 0);
+p.exit ();
+
+obj = b.build ();        % 汇编 + BTF + ELF64/BPF 镜像
+obj.load ();             % 交给 libbpf 校验并加载
+obj.attach_all ();       % 挂载 kprobe
+
+obj.find_map ('counts').lookup (0)</pre>
+
+                        <div class="text-h5 q-ma-md text-red-10">程序段名决定程序类型。</div>
+                        <p class="q-ma-md">bpf.Builder 根据 program() 的段名（SEC）自动推断程序类型与 attach 类型，
+                            例如 kprobe/、kretprobe/、raw_tp/、tracepoint/、fentry/、fexit/、lsm/、iter/、xdp、socket、cgroup/ 等，
+                            与 clang 编译 eBPF 程序时的规则完全一致。bpf.Program.attach() 也会按段名自动选择挂载方式。</p>
+                        <q-separator></q-separator>
+
+                        <div id="function_usage" class="title1 q-ma-md text-primary">函数用法</div>
+                        <p class="q-ma-md">octave_libbpf 提供以下底层可加载函数（libbpf_wrap.oct，182 个子命令）和 Octave 封装函数，
+                            涵盖 eBPF 程序编写、对象加载与挂载、map 读写、环形缓冲区、BTF 类型信息等能力。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">一、编写 eBPF 程序（纯 m 代码工具链）</div>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.Builder</div>
+                        <p class="q-ma-md">Function File: b = bpf.Builder ()</p>
+                        <p class="q-ma-md">Function File: b = bpf.Builder (LICENSE)</p>
+                        <p class="q-ma-md">创建 eBPF 对象构造器，LICENSE 默认为 'GPL'。一个 Builder 收集本次对象的全部 map 与 program，
+                            并负责把它们变成 libbpf 可以加载的 ELF64/BPF 镜像。</p>
+                        <p class="q-ma-md">m = b.map (NAME, TYPE, KEYTYPE, VALUETYPE, MAXENTRIES [, OPTS])　声明一个 map。
+                            TYPE 可以是名字或编号（'array'、'hash'、'ringbuf'、'percpu_hash'、'lru_hash'、'prog_array' 等）。
+                            KEYTYPE / VALUETYPE 支持 'u8' 'u16' 'u32' 'u64' 's8' 's16' 's32' 's64' 'char' 'bool' 'ptr'，
+                            也可以给出一个字节数表示不透明类型，或用 struct('btf', ID) 引用已经加入 bpf.BtfBuilder 的类型。
+                            OPTS 可以包含 map_flags、pinning、numa_node、map_extra、key_size、value_size 等字段。</p>
+                        <p class="q-ma-md">p = b.program (SECTION, NAME)　声明一个程序并返回它的 bpf.Asm 汇编器；
+                            SECTION 即 SEC 段名，决定程序类型。p = b.prog (...) 是它的简写。</p>
+                        <p class="q-ma-md">img = b.elf ()　返回生成的 ELF 镜像（uint8 行向量）。</p>
+                        <p class="q-ma-md">o = b.build ()　等价于 bpf.Object.from_mem (b.elf ())。</p>
+                        <p class="q-ma-md">b.write (PATH)　把 ELF 镜像写入文件，可以交给 bpftool、llvm-objdump 等工具检查。</p>
+                        <p class="q-ma-md">names = b.map_names ()　names = b.program_names ()　m = b.find_map (NAME)　s = b.source ()</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.Asm</div>
+                        <p class="q-ma-md">Class: a = bpf.Asm ()</p>
+                        <p class="q-ma-md">eBPF 汇编器。它收集指令、解析符号标号、记录 map 重定位。全部 125 个指令助记符都可以作为方法调用，
+                            参数与 bpf.Insn 完全一致；跳转类助记符的最后一个参数可以写成字符串形式的标号。</p>
+                        <p class="q-ma-md">a.label (NAME)　在当前指令位置定义标号。</p>
+                        <p class="q-ma-md">a.jump (NAME)　无条件跳转到标号。</p>
+                        <p class="q-ma-md">a.ld_map_fd (DST, MAP)　加载 map 的文件描述符，生成 R_BPF_64_64 重定位。</p>
+                        <p class="q-ma-md">a.ld_map_value (DST, MAP, OFF)　a.ld_map_idx (DST, MAP)</p>
+                        <p class="q-ma-md">b = a.bytes ()　N×8 的 uint8 指令流。n = a.count ()　已使用的指令槽数量。</p>
+                        <p class="q-ma-md">r = a.relocations ()　结构体数组，字段为 slot、sym、kind。</p>
+                        <p class="q-ma-md">s = a.source ()　可读的汇编清单（cellstr），寄存器显示为 r0…r10。</p>
+                        <p class="q-ma-md">a.patch (INDEX, BYTES)　替换指定槽位的指令。a.emit (BYTES)　直接追加编码后的字节。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.Insn</div>
+                        <p class="q-ma-md">Function File: bytes = bpf.Insn (MNEMONIC, ...)</p>
+                        <p class="q-ma-md">编码一条 eBPF 指令（ld_imm64 为两条），返回 1×8（或 1×16）的 uint8 行向量。</p>
+                        <p class="q-ma-md">通用形式：bpf.Insn ('raw', CODE, DST, SRC, OFF, IMM)</p>
+                        <p class="q-ma-md">算术与逻辑：mov/add/sub/mul/div/or/and/lsh/rsh/mod/xor/arsh/neg，
+                            每种都有 64 位与 32 位、imm 与 reg 的组合，例如 mov64_imm、add32_reg。
+                            字节序转换使用 end_le 与 end_be，第二个参数是位宽。</p>
+                        <p class="q-ma-md">内存访问：ldx_w ldx_h ldx_b ldx_dw、stx_w stx_h stx_b stx_dw、st_w st_h st_b st_dw，
+                            以及传统的 ld_abs_* 与 ld_ind_*。</p>
+                        <p class="q-ma-md">分支：ja、jeq/jgt/jge/jset/jne/jsgt/jsge/jlt/jle/jslt/jsle 的 _imm 与 _reg 形式，
+                            以及对应的 jmp32_* 形式；call、callx、exit。</p>
+                        <p class="q-ma-md">原子操作：atomic_w atomic_h atomic_b atomic_dw，最后一个参数是 bpf.atomic_op() 的返回值。</p>
+                        <p class="q-ma-md">特殊形式：ld_imm64、ld_map_fd、ld_map_value、ld_map_idx、ld_btf_id、ld_func。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.MapDef</div>
+                        <p class="q-ma-md">Class: m = bpf.MapDef (NAME, TYPE, KEYTYPE, VALUETYPE, MAXENTRIES)</p>
+                        <p class="q-ma-md">map 的描述对象，通常由 bpf.Builder.map() 创建。属性包括 name、type、type_name、
+                            key、value、max_entries、map_flags、pinning、numa_node、map_extra、key_size、value_size，
+                            以及 is_ringbuf() 与 is_percpu() 两个判定方法。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.BtfBuilder</div>
+                        <p class="q-ma-md">Class: B = bpf.BtfBuilder ()</p>
+                        <p class="q-ma-md">BTF（BPF Type Format）编码器，负责生成 ELF 的 .BTF 段。类型编号从 1 开始，0 表示 void。</p>
+                        <p class="q-ma-md">id = B.add_int (NAME, SIZE, ENCODING)　B.add_ptr (TYPE)　B.add_array (TYPE, NELEMS [, INDEX_TYPE])</p>
+                        <p class="q-ma-md">id = B.add_struct (NAME, MEMBERS)　B.add_union (NAME, MEMBERS)　B.add_typedef (NAME, TYPE)</p>
+                        <p class="q-ma-md">id = B.add_const (TYPE)　B.add_volatile (TYPE)　B.add_restrict (TYPE)　B.add_fwd (NAME [, IS_UNION])</p>
+                        <p class="q-ma-md">id = B.add_enum (NAME, NAMES, VALUES [, SIZE])　B.add_func_proto (RET [, PARAMS])　B.add_func (NAME, PROTO)</p>
+                        <p class="q-ma-md">id = B.add_var (NAME, TYPE [, LINKAGE])　B.add_datasec (NAME, VARS)　B.add_decl_tag (NAME, TYPE, IDX)</p>
+                        <p class="q-ma-md">n = B.type_cnt ()　s = B.size_of (ID)　s = B.name_of (ID)　k = B.kind_of (ID)　b = B.bytes ()</p>
+                        <p class="q-ma-md">常量属性：KIND_INT 等全部 BTF kind、ENC_NONE/ENC_SIGNED/ENC_CHAR/ENC_BOOL、
+                            VAR_STATIC/VAR_GLOBAL_ALLOCATED/VAR_GLOBAL_EXTERN。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.Elf</div>
+                        <p class="q-ma-md">Class: E = bpf.Elf ()</p>
+                        <p class="q-ma-md">最小的 ELF64/BPF 重定位目标文件写出器。</p>
+                        <p class="q-ma-md">idx = E.add_section (NAME, TYPE, FLAGS, ALIGN, DATA)　E.add_relocs (TARGET_IDX, ENTRIES)</p>
+                        <p class="q-ma-md">E.add_symbol (NAME, VALUE, SIZE, INFO, SHNDX [, OTHER])　b = E.bytes ()</p>
+                        <p class="q-ma-md">常量属性包括 SHT_*、SHF_*、STB_*、STT_*、R_BPF_*、EM_BPF、ET_REL。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.regs</div>
+                        <p class="q-ma-md">Function File: R = bpf.regs ()</p>
+                        <p class="q-ma-md">返回 r0…r10 的寄存器编号结构体：R.R0 … R.R10，另有 R.FP（10）与 R.RET（0）。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.helper</div>
+                        <p class="q-ma-md">Function File: id = bpf.helper (NAME)</p>
+                        <p class="q-ma-md">按名字查询 eBPF helper 函数编号，'map_lookup_elem' 与 'bpf_map_lookup_elem' 都可以。
+                            表由 libbpf 的 bpf_helper_defs.h 生成，共 211 个 helper。也可以直接传入编号。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.atomic_op</div>
+                        <p class="q-ma-md">Function File: op = bpf.atomic_op (NAME [, FETCH])</p>
+                        <p class="q-ma-md">返回原子指令的立即数：'add' 'or' 'and' 'xor' 默认带 BPF_FETCH，'xchg' 与 'cmpxchg' 不带；
+                            第二个参数可以显式控制是否带 fetch。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">二、对象模型</div>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.Object</div>
+                        <p class="q-ma-md">Class: obj = bpf.Object.from_file (PATH)</p>
+                        <p class="q-ma-md">Class: obj = bpf.Object.from_mem (BYTES [, NAME [, OPTS]])</p>
+                        <p class="q-ma-md">封装 struct bpf_object，拥有它暴露的所有 program 与 map，以及通过它创建的所有 link。</p>
+                        <p class="q-ma-md">obj.load ()　obj.prepare ()　obj.set_log (BYTES)　s = obj.get_log (NAME)</p>
+                        <p class="q-ma-md">link = obj.attach (NAME)　links = obj.attach_all ()　obj.detach_all ()</p>
+                        <p class="q-ma-md">p = obj.find_program (NAME)　m = obj.find_map (NAME)　obj.programs ()　obj.maps ()</p>
+                        <p class="q-ma-md">obj.program_names ()　obj.map_names ()　s = obj.name ()　v = obj.kversion ()</p>
+                        <p class="q-ma-md">f = obj.btf_fd ()　b = obj.btf ()　obj.pin (PATH)　obj.unpin (PATH)</p>
+                        <p class="q-ma-md">obj.pin_maps (PATH)　obj.unpin_maps ([PATH])　obj.pin_programs (PATH)　obj.unpin_programs ([PATH])</p>
+                        <p class="q-ma-md">清除对象时会自动 detach 所有 link 并关闭 bpf_object。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.Program</div>
+                        <p class="q-ma-md">Class: p = obj.find_program (NAME)</p>
+                        <p class="q-ma-md">f = p.fd ()　s = p.name　s = p.section ()　t = p.type ()　e = p.expected_attach_type ()</p>
+                        <p class="q-ma-md">n = p.insn_cnt ()　b = p.insns ()　p.set_autoload (BOOL)　p.set_autoattach (BOOL)　a = p.autoload ()</p>
+                        <p class="q-ma-md">p.set_log_level (LEVEL)　p.set_log_buf ([BYTES])　s = p.get_log ()　这三者必须在 load 之前调用。</p>
+                        <p class="q-ma-md">p.set_attach_target (BTF_ID [, FUNC])　p.pin (PATH)　p.unpin (PATH)</p>
+                        <p class="q-ma-md">挂载：l = p.attach () 会按段名自动选择方式；也可以显式调用
+                            p.attach_kprobe (FUNC [, OPTS])、p.attach_kprobe_multi ([PATTERN], OPTS)、p.attach_uprobe (PID, PATH [, OFF [, OPTS]])、
+                            p.attach_uprobe_multi (PID, PATH [, PATTERN [, OPTS]])、p.attach_tracepoint (CATEGORY, NAME [, OPTS])、
+                            p.attach_raw_tracepoint (NAME)、p.attach_trace ()、p.attach_lsm ()、p.attach_cgroup (FD)、p.attach_netns (FD)、
+                            p.attach_xdp (IFINDEX)、p.attach_tcx (IFINDEX [, OPTS])、p.attach_netkit (IFINDEX [, OPTS])、
+                            p.attach_sockmap (MAP_FD)、p.attach_freplace (TARGET_FD [, FUNC])、p.attach_netfilter (OPTS)、
+                            p.attach_iter ()、p.attach_usdt (PID, PATH, PROVIDER, NAME [, OPTS])、p.attach_perf_event (PERF_FD [, OPTS])、
+                            p.attach_ksyscall (SYSCALL [, OPTS])。</p>
+                        <p class="q-ma-md">r = p.test_run ([DATA [, REPEAT [, OPTS]]])　用 BPF_PROG_TEST_RUN 在不挂载的情况下运行程序，
+                            返回结构体 retval、duration_ns、data_size_out、data_out、ctx_size_out、ctx_out。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.Map</div>
+                        <p class="q-ma-md">Class: m = obj.find_map (NAME)</p>
+                        <p class="q-ma-md">Class: m = bpf.Map.create (TYPE, KEY_SIZE, VALUE_SIZE, MAX_ENTRIES [, NAME [, OPTS]])</p>
+                        <p class="q-ma-md">Class: m = bpf.Map.from_fd (FD)</p>
+                        <p class="q-ma-md">f = m.fd ()　s = m.name　t = m.type ()　k = m.key_size ()　v = m.value_size ()　n = m.max_entries ()　i = m.info ()</p>
+                        <p class="q-ma-md">v = m.lookup (KEY)　b = m.lookup (KEY, 'raw')　m.update (KEY, VALUE [, FLAGS])　m.remove (KEY)</p>
+                        <p class="q-ma-md">v = m.lookup_and_delete (KEY)　k = m.next_key ([KEY])　ks = m.keys ()　m.freeze ()</p>
+                        <p class="q-ma-md">键与值既可以写成整数标量（按 key/value 大小转换），也可以写成 uint8 字节向量；
+                            1/2/4/8 字节的值会还原为对应的整数类型。array map 不支持删除，remove 会被内核拒绝。</p>
+                        <p class="q-ma-md">m.set_pin_path (PATH)　m.pin ([PATH])　m.unpin ([PATH])　s = m.pin_path ()　b = m.is_pinned ()</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.Link</div>
+                        <p class="q-ma-md">Class: l = bpf.Link (PTR)　Class: l = bpf.Link.open (PATH)</p>
+                        <p class="q-ma-md">f = l.fd ()　l.destroy ()　l.detach ()　l.disconnect ()　l.pin (PATH)　l.unpin ()　s = l.pin_path ()</p>
+                        <p class="q-ma-md">l.update_program (P)　l.update_map (M)。对象被清除时会自动 destroy 并 detach。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.RingBuf</div>
+                        <p class="q-ma-md">Class: rb = bpf.RingBuf (MAP)</p>
+                        <p class="q-ma-md">[samples, lost] = rb.poll (TIMEOUT_MS [, MAX_SAMPLES])</p>
+                        <p class="q-ma-md">[samples, lost] = rb.consume ([MAX_SAMPLES])　rb.add (MAP)　f = rb.epoll_fd ()</p>
+                        <p class="q-ma-md">采样由 C 层在轮询期间收集，等到轮询返回后再交给 Octave，因此不会从 libbpf 内部回调解释器。
+                            每个采样是一个 uint8 行向量。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.PerfBuf</div>
+                        <p class="q-ma-md">Class: pb = bpf.PerfBuf (MAP [, PAGE_CNT])</p>
+                        <p class="q-ma-md">[samples, lost] = pb.poll (TIMEOUT_MS [, MAX_SAMPLES])　[samples, lost] = pb.consume ()</p>
+                        <p class="q-ma-md">n = pb.buffer_cnt ()　f = pb.epoll_fd ()。每个采样是含 cpu 与 data 字段的结构体。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.BTF</div>
+                        <p class="q-ma-md">Class: B = bpf.BTF.from_file (PATH)　bpf.BTF.from_raw (BYTES)　bpf.BTF.new_empty ()</p>
+                        <p class="q-ma-md">Class: B = bpf.BTF.vmlinux ()　bpf.BTF.kernel (BTF_ID)</p>
+                        <p class="q-ma-md">n = B.type_cnt ()　i = B.type_info (ID)　i = B.find_by_name (NAME)　i = B.find_by_name_kind (NAME, KIND)</p>
+                        <p class="q-ma-md">s = B.name_by_offset (OFF)　r = B.raw_data ()　s = B.dump ([ID])　f = B.load_into_kernel ()　f = B.fd ()</p>
+                        <p class="q-ma-md">常量属性：KIND_UNKN … KIND_ENUM64，例如 bpf.BTF.KIND_STRUCT。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">三、类型、枚举与字节转换</div>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.map_type / bpf.prog_type / bpf.attach_type / bpf.link_type</div>
+                        <p class="q-ma-md">Function File: [VALUE, NAME] = bpf.map_type (KEY)　（其余三个规则相同）</p>
+                        <p class="q-ma-md">按名字或编号解析内核枚举。名字不区分大小写，可以带前缀也可以省略，
+                            例如 'array'、'ARRAY'、'BPF_MAP_TYPE_ARRAY'、2 都解析为 2。编号输入会原样返回，并尽量补全规范名。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.enum_lookup</div>
+                        <p class="q-ma-md">Function File: [VALUE, NAME] = bpf.enum_lookup (GROUP, KEY [, PREFIX])</p>
+                        <p class="q-ma-md">上面四个函数的底层实现。GROUP 是 bpf.enum_table() 中的一个字段，例如 'bpf_map_type'、'bpf_prog_type'、
+                            'bpf_attach_type'、'bpf_link_type'、'bpf_cmd'。枚举表由系统头文件 &lt;linux/bpf.h&gt; 解析生成，共 256 个常量。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.bytes2num / bpf.num2bytes</div>
+                        <p class="q-ma-md">Function File: v = bpf.bytes2num (BYTES [, SIGNED])</p>
+                        <p class="q-ma-md">Function File: b = bpf.num2bytes (V [, N])</p>
+                        <p class="q-ma-md">在小端字节向量与整数之间转换，1/2/4/8 字节分别对应 uint8/uint16/uint32/uint64。
+                            这两个函数在 map 读写以及 BTF/ELF 编码中被广泛使用。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">四、运行环境与诊断</div>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.version</div>
+                        <p class="q-ma-md">Function File: v = bpf.version ()</p>
+                        <p class="q-ma-md">返回结构体 major、minor、string，描述当前链接的 libbpf 版本。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.commands</div>
+                        <p class="q-ma-md">Function File: c = bpf.commands ()</p>
+                        <p class="q-ma-md">返回 libbpf_wrap.oct 支持的全部子命令名（已排序的 cellstr），当前为 182 个。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.raw</div>
+                        <p class="q-ma-md">Function File: [A, B, ...] = bpf.raw (COMMAND, ARG, ...)</p>
+                        <p class="q-ma-md">直接调用底层 oct 文件的逃生通道，可以访问完整的 libbpf 绑定。指针以 uint64 标量传递，
+                            错误会以 "libbpf: ..." 开头的 Octave 异常抛出。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.probe</div>
+                        <p class="q-ma-md">Function File: tf = bpf.probe (WHAT, ARG [, ARG2])</p>
+                        <p class="q-ma-md">探测内核能力：bpf.probe('prog_type', TYPE)、bpf.probe('map_type', TYPE)、
+                            bpf.probe('helper', PROG_TYPE, HELPER)。探测通过尝试加载一个最小程序完成，因此可能需要一点时间。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.have_bpf</div>
+                        <p class="q-ma-md">Function File: tf = bpf.have_bpf ()</p>
+                        <p class="q-ma-md">通过创建一个极小的 array map 判断当前进程是否有权使用 eBPF，
+                            脚本可以用它决定是否跳过需要特权的部分。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.num_cpus</div>
+                        <p class="q-ma-md">Function File: n = bpf.num_cpus ()</p>
+                        <p class="q-ma-md">返回 possible CPU 数量，用于给 per-CPU map 分配 value 空间。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.set_print / bpf.capture / bpf.get_log</div>
+                        <p class="q-ma-md">Function File: old = bpf.set_print (LEVEL)</p>
+                        <p class="q-ma-md">Function File: tf = bpf.capture ([TF])</p>
+                        <p class="q-ma-md">Function File: s = bpf.get_log (['clear'])</p>
+                        <p class="q-ma-md">控制 libbpf 输出到 stderr 的详细程度（0 静默、1 警告、2 信息、3 调试），并把输出同时捕获下来。
+                            当程序被内核拒绝时，bpf.get_log() 是查看校验器日志最方便的方式。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.memlock</div>
+                        <p class="q-ma-md">Function File: bpf.memlock ([BYTES])</p>
+                        <p class="q-ma-md">提高 RLIMIT_MEMLOCK。5.11 之前的内核把 eBPF map 与程序的内存计入该限制，
+                            在这些内核上创建较大的 map 之前需要调用它；新内核上调用它是无害的。</p>
+
+                        <div class="text-h6 q-ma-md text-primary">bpf.load_object</div>
+                        <p class="q-ma-md">Function File: obj = bpf.load_object (SOURCE, 'attach', TF, 'pin', PATH)</p>
+                        <p class="q-ma-md">便捷入口：SOURCE 可以是 .bpf.o 文件路径、bpf.Builder 对象或 ELF 字节向量，
+                            依次完成打开、加载、可选固定与可选挂载。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">五、底层绑定 libbpf_wrap</div>
+                        <p class="q-ma-md">oct 文件只暴露一个函数 libbpf_wrap (COMMAND, ARG, ...)，按字符串分发到 182 个处理函数。
+                            约定：句柄是 uint64 标量形式的 C 指针；可选参数以 Octave 标量结构体传入；二进制数据以 uint8 行向量传递；
+                            返回指针的 libbpf 调用会用 libbpf_get_error() 检查并转成 Octave 异常。</p>
+                        <p class="q-ma-md">主要命令组：object_*（打开、加载、关闭、固定、查找）、program_*（元信息、日志、全部 attach）、
+                            map_*（创建、元素读写、批量、固定、信息）、link_*、ringbuf_*、perfbuf_*、btf_*（解析、遍历、加载、反汇编），
+                            以及 prog_* / map_* 等底层系统调用封装（bpf_prog_load、bpf_map_create、bpf_obj_get/pin、bpf_prog_attach 等）。</p>
+                        <p class="q-ma-md">用 bpf.commands() 可以列出全部命令，用 bpf.raw() 可以直接调用它们。</p>
+                        <q-separator></q-separator>
+
+                        <div id="common_examples" class="title1 q-ma-md text-primary">常见用例</div>
+
+                        <div class="text-h5 q-ma-md text-red-10">一、统计系统调用次数（kprobe + array map）</div>
+                        <p class="q-ma-md">examples/hello_kprobe.m。完整代码见上文的“用Octave编写eBPF程序”。运行方式：</p>
+                        <p class="q-ma-md">&gt;&gt; run ('examples/hello_kprobe.m')</p>
+                        <pre class="q-ma-md code-block">obj = b.build ();
+obj.load ();
+links = obj.attach_all ();
+map = obj.find_map ('counts');
+map.lookup (0)          % 再触发一次 openat2 后重新读取，计数会增加</pre>
+
+                        <div class="text-h5 q-ma-md text-red-10">二、通过 ring buffer 把事件流式送到 Octave</div>
+                        <p class="q-ma-md">examples/ringbuf_tracepoint.m。raw tracepoint 程序在每次系统调用入口把当前 pid 写入 ring buffer：</p>
+                        <pre class="q-ma-md code-block">b = bpf.Builder ('GPL');
+events = b.map ('events', 'ringbuf', [], [], 4096);
+
+p = b.program ('raw_tp/sys_enter', 'on_sys_enter');
+p.st_w (R.R10, -8, 0);                          % event = {0, 0}
+p.st_w (R.R10, -4, 0);
+p.call (bpf.helper ('get_current_pid_tgid'));
+p.mov64_reg (R.R1, R.R0);
+p.rsh64_imm (R.R1, 32);
+p.stx_w (R.R10, R.R1, -8);                      % event.pid = tgid
+p.ld_map_fd (R.R1, 'events');
+p.mov64_reg (R.R2, R.R10);
+p.add64_imm (R.R2, -8);
+p.mov64_imm (R.R3, 8);                          % sizeof (event)
+p.mov64_imm (R.R4, 0);                          % flags
+p.call (bpf.helper ('ringbuf_output'));
+p.mov64_imm (R.R0, 0);
+p.exit ();
+
+obj = b.build (); obj.load (); obj.attach_all ();
+rb = bpf.RingBuf (obj.find_map ('events'));
+[samples, lost] = rb.poll (500, 16);
+printf ('收到 %d 个采样，丢失 %d 个\n', numel (samples), lost);</pre>
+                        <p class="q-ma-md">ring buffer 类型的 map 不需要 key 与 value，bpf.Builder 会自动省略对应成员，
+                            使 key_size 与 value_size 保持为 0，符合内核的要求。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">三、用 BPF_PROG_TEST_RUN 直接运行程序</div>
+                        <p class="q-ma-md">examples/test_run.m。不需要挂载到任何接口，最适合验证用 Octave 写出的程序是否正确：</p>
+                        <pre class="q-ma-md code-block">b = bpf.Builder ('GPL');
+p = b.program ('xdp', 'count_and_pass');
+% ... 统计包数后返回 XDP_PASS（2） ...
+obj = b.build (); obj.load ();
+prog = obj.find_program ('count_and_pass');
+r = prog.test_run (uint8 (zeros (1, 100)));
+printf ('retval = %d, 耗时 %d ns\n', r.retval, r.duration_ns);</pre>
+
+                        <div class="text-h5 q-ma-md text-red-10">四、直接在 Octave 中操作 eBPF map</div>
+                        <p class="q-ma-md">examples/map_from_octave.m。使用底层 libbpf map API，不需要加载任何程序：</p>
+                        <pre class="q-ma-md code-block">m = bpf.Map.create ('hash', 4, 8, 16, 'octave_hash');
+for k = 0:4
+  m.update (k, 100 + k);
+end
+printf ('m[3] = %d\n', m.lookup (3));
+printf ('键：%s\n', mat2str (cell2mat (m.keys ())));
+m.remove (3);
+printf ('原始字节：%s\n', mat2str (m.lookup (9, 'raw')));</pre>
+
+                        <div class="text-h5 q-ma-md text-red-10">五、加载 clang 编译的 eBPF 对象</div>
+                        <p class="q-ma-md">examples/clang_object.m。octave_libbpf 并不限定对象必须由自己生成：</p>
+                        <pre class="q-ma-md code-block">$ clang -target bpf -g -O2 -c examples/hello.bpf.c -o examples/hello.bpf.o
+
+&gt;&gt; obj = bpf.Object.from_file ('examples/hello.bpf.o');
+&gt;&gt; obj.load ();
+&gt;&gt; obj.maps (){1}
+  bpf.Map "counts" type=array key=4 value=8 max_entries=4 fd=14</pre>
+
+                        <div class="text-h5 q-ma-md text-red-10">六、遍历内核的 BTF 类型信息</div>
+                        <pre class="q-ma-md code-block">&gt;&gt; B = bpf.BTF.vmlinux ();
+&gt;&gt; id = B.find_by_name_kind ('task_struct', bpf.BTF.KIND_STRUCT);
+&gt;&gt; info = B.type_info (id)
+&gt;&gt; disp (B.dump (id))       % 以 C 声明形式打印该类型</pre>
+
+                        <div class="text-h5 q-ma-md text-red-10">七、查看程序被拒绝的原因</div>
+                        <pre class="q-ma-md code-block">&gt;&gt; bpf.set_print (3);        % 打开 libbpf 调试输出
+&gt;&gt; obj = b.build (); obj.set_log (1048576);
+&gt;&gt; try, obj.load (); catch, end
+&gt;&gt; disp (obj.get_log ('hello'))   % 内核校验器日志
+&gt;&gt; disp (bpf.get_log ())          % libbpf 自己的诊断信息</pre>
+                        <q-separator></q-separator>
+
+                        <div id="design" class="title1 q-ma-md text-primary">实现原理</div>
+                        <p class="q-ma-md">octave_libbpf 分成两层：上面是纯 m 代码实现的 eBPF 工具链与对象模型，
+                            下面是 src/libbpf_wrap.cc 编译出的 oct 文件，它把 Octave 值转成 C 值、调用系统 libbpf，再把结果转回 Octave。
+                            C++ 层不做任何策略判断，因此行为与直接用 C 调用 libbpf 完全一致。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">一段 Octave 程序如何变成内核里的 eBPF 程序</div>
+                        <p class="q-ma-md">1. bpf.Asm 用 bpf.Insn 编码每条指令，解析符号标号，并记录 map 引用。</p>
+                        <p class="q-ma-md">2. bpf.BtfBuilder 编码描述每个 map 的 BTF，也就是 libbpf 1.0 之后要求的现代 map 定义形式：
+                            int (*type)[BPF_MAP_TYPE_ARRAY]、int (*max_entries)[8]、__u32 *key、__u64 *value，
+                            再加上每个 map 的 VAR 记录和一条 .maps 的 DATASEC 记录。</p>
+                        <p class="q-ma-md">3. bpf.Elf 生成 ELF64 小端、EM_BPF（247）的 ET_REL 目标文件：程序段、.maps、license、.BTF、
+                            符号表，以及每个引用 map 的程序段对应的一条 SHT_REL 重定位段。</p>
+                        <p class="q-ma-md">4. bpf.Object.from_mem 把镜像交给 bpf_object__open_mem()；之后 libbpf 会像处理 clang 生成的
+                            .bpf.o 一样完成校验、map 创建、程序加载与固定。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">几个容易出错、但已经处理好的细节</div>
+                        <p class="q-ma-md">1. BTF_KIND_ARRAY 中未使用的 size/type 字段必须为 0，否则内核会以 "size != 0" 拒绝整个 BTF。</p>
+                        <p class="q-ma-md">2. BTF_KIND_INT 的 encoding 字里存放的是位宽（nr_bits），而不是字节数。</p>
+                        <p class="q-ma-md">3. ring buffer 类型的 map 必须省略 key/value 成员，使 key_size 与 value_size 为 0。</p>
+                        <p class="q-ma-md">4. 写 ELF 程序段时必须按指令顺序展平 N×8 的指令矩阵，不能按列优先。</p>
+                        <p class="q-ma-md">5. 发行版往往只安装 libbpf.so.1 而没有开发链接，因此构建系统需要回退到 -l:libbpf.so.1；
+                            同时因为 libbpf 只会在公开结构体尾部追加字段，用较新头文件编译的包可以安全运行在较旧的共享库上。</p>
+                        <p class="q-ma-md">更详细的说明见包内的 doc/design.md。</p>
+
+                        <div class="text-h5 q-ma-md text-red-10">两个 Octave 语法注意事项</div>
+                        <p class="q-ma-md">1. 在 cell 或矩阵字面量里，函数名与左括号之间如果写了空格，会被解析成命令语法，
+                            逗号后面的项会变成额外的实参。例如 { fullfile ('/tmp'), 2 } 其实是 1×3 的 cell，
+                            应当写成 {fullfile('/tmp'), 2}。</p>
+                        <p class="q-ma-md">2. bpf.xxx (ARG).field 这种“包函数调用后紧跟字段访问”的写法 Octave 无法解析，
+                            请先把结果赋给变量。这也是 bpf.map_type() 等函数直接返回数值、而把名字作为第二个输出的原因。</p>
+                        <q-separator></q-separator>
+
+                        <div id="tests" class="title1 q-ma-md text-primary">测试</div>
+                        <p class="q-ma-md">包内自带 <b>45</b> 个 BIST 用例，分布在六个测试文件中。纯用户态的用例（指令编码、BTF 编码、ELF 生成、枚举与工具）在任何环境都会执行；需要内核配合的用例（创建 map、加载程序、BPF_PROG_TEST_RUN）会先用 bpf.have_bpf() 探测权限，没有 CAP_BPF 时自动跳过，因此 <code>pkg test</code> 在普通用户下也不会失败。</p>
+                        <div class="text-h5 q-ma-md text-red-10">运行全部测试，代码如下：</div>
+                        <p class="q-ma-md">&gt;&gt; pkg load octave_libbpf</p>
+                        <p class="q-ma-md">&gt;&gt; pkg test octave_libbpf</p>
+                        <p class="q-ma-md">      tst_btf.m    pass    5/5</p>
+                        <p class="q-ma-md">      tst_elf.m    pass    6/6</p>
+                        <p class="q-ma-md">      tst_insn.m   pass   16/16</p>
+                        <p class="q-ma-md">      tst_map.m    pass    5/5</p>
+                        <p class="q-ma-md">      tst_misc.m   pass    8/8</p>
+                        <p class="q-ma-md">      tst_object.m pass    5/5</p>
+                        <p class="q-ma-md">      Summary:  PASS 45   FAIL 0</p>
+                        <p class="q-ma-md">也可以直接运行某一个文件，例如 <code>test ('tst_insn.m')</code>；涉及真实挂载的完整链路可以用 <code>make examples</code> 验证。</p>
+                        <div class="q-ma-md">
+                            <button class="doc-toggle" type="button" onclick="toggleAllTests(true)">全部展开</button>
+                            <button class="doc-toggle" type="button" onclick="toggleAllTests(false)">全部收起</button>
+                        </div>
+                        <div class="text-h5 q-ma-md text-red-10">测试文件一览</div>
+                        <table class="test-table q-ma-md">
+                          <thead><tr><th>文件</th><th>用例数</th><th>覆盖范围</th></tr></thead>
+                          <tbody>
+                            <tr><td><a href="#tests_tst_insn">tst_insn.m</a></td><td>16</td><td>指令编码</td></tr>
+                            <tr><td><a href="#tests_tst_btf">tst_btf.m</a></td><td>5</td><td>BTF 编码</td></tr>
+                            <tr><td><a href="#tests_tst_elf">tst_elf.m</a></td><td>6</td><td>ELF 目标文件生成</td></tr>
+                            <tr><td><a href="#tests_tst_map">tst_map.m</a></td><td>5</td><td>eBPF map 操作</td></tr>
+                            <tr><td><a href="#tests_tst_object">tst_object.m</a></td><td>5</td><td>对象加载与运行</td></tr>
+                            <tr><td><a href="#tests_tst_misc">tst_misc.m</a></td><td>8</td><td>环境、枚举与工具</td></tr>
+                            <tr><td></td><td><b>45</b></td><td></td></tr>
+                          </tbody>
+                        </table>
+                        <q-separator></q-separator>
+                        <div id="tests_tst_insn" class="text-h4 q-ma-md text-primary">tst_insn.m —— 指令编码</div>
+                        <p class="q-ma-md">逐条验证 bpf.Insn 的二进制编码，以及 bpf.Asm 的标号解析与重定位记录。这一组用例完全在用户态运行，不需要 eBPF 权限，任何环境都会执行。</p>
+                        <div class="text-h5 q-ma-md text-red-10">用例 1：mov64_imm r1, 1</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（mov64_imm r1, 1）</summary>
+                          <pre class="code-block">b = bpf.Insn (&#x27;mov64_imm&#x27;, 1, 1);
+assert (class (b), &#x27;uint8&#x27;);
+assert (size (b), [1, 8]);
+assert (b, uint8 ([0xb7, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00]));</pre>
+                          <p class="test-explain">最基本的 ALU64 立即数传送。opcode <code>0xb7</code> 由 BPF_ALU64、BPF_MOV、BPF_K 三部分按位或成；
+第 2 字节 <code>0x01</code> 的低 4 位是目的寄存器 r1，高 4 位是源寄存器（立即数形式下为 0）；
+后 4 字节是小端立即数 1。这里同时确认返回值一定是 1×8 的 uint8 行向量，这是后面拼装整条指令流的基础约定。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 2：mov64_reg r2, r10</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（mov64_reg r2, r10）</summary>
+                          <pre class="code-block">b = bpf.Insn (&#x27;mov64_reg&#x27;, 2, 10);
+assert (b, uint8 ([0xbf, 0xa2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]));</pre>
+                          <p class="test-explain">寄存器到寄存器传送，opcode <code>0xbf</code>（加上 BPF_X 表示源操作数是寄存器）。
+第 2 字节 <code>0xa2</code> 的低位是 dst=2、高位是 src=10，说明寄存器编号的打包顺序没有弄反——
+这类看起来"显然"的地方恰恰是编码器最容易写错的地方。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 3：mov32_imm 属于 32 位 ALU 类</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（mov32_imm is the 32 bit ALU class）</summary>
+                          <pre class="code-block">b = bpf.Insn (&#x27;mov32_imm&#x27;, 0, 7);
+assert (b(1), uint8 (0xb4));</pre>
+                          <p class="test-explain">32 位版本使用 <code>0xb4</code>（BPF_ALU 而不是 BPF_ALU64），与 64 位版本相差 3。
+这条用例专门盯住"64/32 位判定"这个曾经的缺陷：早期实现把 64 位误判成 32 位，
+于是所有 ALU 指令的 opcode 都偏了 3，内核校验器报出一堆莫名其妙的错误。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 4：负偏移与负立即数使用补码</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（negative offsets and immediates are two's complement）</summary>
+                          <pre class="code-block">b = bpf.Insn (&#x27;st_w&#x27;, 10, -4, 0);
+assert (b, uint8 ([0x62, 0x0a, 0xfc, 0xff, 0x00, 0x00, 0x00, 0x00]));</pre>
+                          <p class="test-explain">栈访问 <code>st_w r10, -4, 0</code>：opcode <code>0x62</code>（BPF_ST｜BPF_MEM｜BPF_W），
+偏移 -4 编码为 <code>0xfc 0xff</code>，即 int16 的小端补码。eBPF 的栈只能通过
+<code>r10</code>（帧指针）加负偏移访问，所以负偏移的编码必须完全正确。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 5：带负偏移的无条件跳转</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（an unconditional branch with a negative offset）</summary>
+                          <pre class="code-block">b = bpf.Insn (&#x27;ja&#x27;, -3);
+assert (b, uint8 ([0x05, 0x00, 0xfd, 0xff, 0x00, 0x00, 0x00, 0x00]));</pre>
+                          <p class="test-explain"><code>ja -3</code> 的 opcode 是 <code>0x05</code>，偏移同样是 16 位补码。
+向后跳转是循环的基础，这条用例确认反向偏移不会被当成无符号数写坏。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 6：exit</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（exit）</summary>
+                          <pre class="code-block">assert (bpf.Insn (&#x27;exit&#x27;), uint8 ([0x95, 0, 0, 0, 0, 0, 0, 0]));</pre>
+                          <p class="test-explain"><code>0x95</code> 是 BPF_JMP｜BPF_EXIT，其余字段全 0。
+每个 eBPF 程序都必须以 exit 结束（或者以别的终结指令结束），
+否则内核校验器会直接拒绝整个程序。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 7：ld_imm64 占用两个指令槽</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（ld_imm64 occupies two instruction slots）</summary>
+                          <pre class="code-block">b = bpf.Insn (&#x27;ld_imm64&#x27;, 1, 5);
+assert (size (b), [1, 16]);
+assert (b(1:8), uint8 ([0x18, 0x01, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00]));
+assert (b(9:16), uint8 ([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]));</pre>
+                          <p class="test-explain">64 位立即数加载要占 <b>两条</b>指令（16 字节）：第一条 opcode <code>0x18</code>
+（BPF_LD｜BPF_IMM｜BPF_DW），低 32 位放在第一条的 imm 里，高 32 位放在第二条的 imm 里。
+汇编器必须为它记 2 个槽位，否则后面所有标号的偏移都会错位一位。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 8：ld_map_fd 使用 BPF_PSEUDO_MAP_FD 源寄存器</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（ld_map_fd uses the BPF_PSEUDO_MAP_FD source register）</summary>
+                          <pre class="code-block">b = bpf.Insn (&#x27;ld_map_fd&#x27;, 1);
+assert (b(1:8), uint8 ([0x18, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]));</pre>
+                          <p class="test-explain">引用 map 的伪指令：opcode 仍然是 <code>0x18</code>，但把 src_reg 字段写成
+BPF_PSEUDO_MAP_FD（值为 1），所以第 2 字节是 <code>0x11</code>（dst=1、src=1）。
+libbpf 在加载时会根据重定位把真正的 map 文件描述符填进 imm。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 9：超过 32 位的 64 位立即数</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（a 64 bit immediate wider than 32 bits）</summary>
+                          <pre class="code-block">b = bpf.Insn (&#x27;ld_imm64&#x27;, 2, 0x123456789);
+assert (b(5:8), uint8 ([0x89, 0x67, 0x45, 0x23]));
+assert (b(13:16), uint8 ([0x01, 0x00, 0x00, 0x00]));</pre>
+                          <p class="test-explain"><code>0x123456789</code> 的低 32 位 <code>0x23456789</code> 放在第一条 imm，
+高 32 位 <code>0x1</code> 放在第二条 imm，两者都是小端。
+这条用例保证了 64 位立即数不会被截断——早先的实现曾经把低 32 位整个丢掉，
+只留下高 32 位。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 10：调用 helper 函数</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（a call to a helper）</summary>
+                          <pre class="code-block">b = bpf.Insn (&#x27;call&#x27;, bpf.helper (&#x27;map_lookup_elem&#x27;));
+assert (b(1), uint8 (0x85));
+assert (double (bpf.bytes2num (b(5:8))), bpf.helper (&#x27;map_lookup_elem&#x27;));</pre>
+                          <p class="test-explain">call 的 opcode 是 <code>0x85</code>（BPF_JMP｜BPF_CALL），imm 是 helper 编号。
+用例先用 <code>bpf.helper('map_lookup_elem')</code> 取出编号（1），
+再用 <code>bpf.bytes2num</code> 把编码好的 imm 解回来对比，
+一次覆盖 helper 表、指令编码、字节还原三条链路。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 11：64 位与 32 位条件跳转使用不同的指令类</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（64 bit and 32 bit conditional branches use different classes）</summary>
+                          <pre class="code-block">a = bpf.Insn (&#x27;jeq_reg&#x27;, 1, 2, 5);
+c = bpf.Insn (&#x27;jmp32_jeq_reg&#x27;, 1, 2, 5);
+assert (a(1), uint8 (0x1d));
+assert (c(1), uint8 (0x1e));</pre>
+                          <p class="test-explain"><code>jeq_reg</code> 是 <code>0x1d</code>（JMP｜JEQ｜X），
+<code>jmp32_jeq_reg</code> 是 <code>0x1e</code>（JMP32｜JEQ｜X），两者只差 1。
+比较 64 位与 32 位操作数是两个不同的指令类，混用会让比较结果出错，
+而错误往往只在特定数据下才暴露。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 12：拒绝未知助记符</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（unknown mnemonics are rejected）</summary>
+                          <pre class="code-block">fail (&#x27;bpf.Insn (&#x27;&#x27;not_a_real_instruction&#x27;&#x27;, 1, 2)&#x27;, &#x27;unknown mnemonic&#x27;);</pre>
+                          <p class="test-explain">非法助记符必须立即报错，而不是静默生成一条垃圾指令。
+汇编器越早失败越安全：生成一份"看起来能加载"的错误字节，
+通常要在内核校验器里绕一大圈才能定位。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 13：helper 表与类型表</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（helper and type tables）</summary>
+                          <pre class="code-block">assert (bpf.helper (&#x27;map_lookup_elem&#x27;), 1);
+assert (bpf.helper (&#x27;bpf_map_lookup_elem&#x27;), 1);
+assert (bpf.map_type (&#x27;array&#x27;), 2);
+assert (bpf.map_type (&#x27;BPF_MAP_TYPE_RINGBUF&#x27;), 27);
+assert (bpf.prog_type (&#x27;kprobe&#x27;), 2);
+assert (bpf.atomic_op (&#x27;add&#x27;), 1);
+assert (bpf.atomic_op (&#x27;add&#x27;, false), 0);
+assert (bpf.atomic_op (&#x27;cmpxchg&#x27;), 240);</pre>
+                          <p class="test-explain">检查几张由头文件生成的表：<code>bpf.helper</code> 同时接受带前缀与不带前缀的名字；
+<code>bpf.map_type</code> 支持短名、全名与编号；<code>bpf.prog_type</code> 按名字查程序类型；
+<code>bpf.atomic_op</code> 的 fetch 位（add 默认带 BPF_FETCH=1、显式关掉为 0、cmpxchg 为 0xf0）。
+这里还顺带验证了返回值是 double —— Octave 会把 <code>0xf0</code> 这样的十六进制字面量解析成
+uint8，所以打包时必须显式转换。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 14：汇编器解析标号</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（asm labels are resolved）</summary>
+                          <pre class="code-block">R = bpf.regs ();
+a = bpf.Asm ();
+a.mov64_imm (R.R0, 1);
+a.jeq_imm (R.R0, 1, &#x27;target&#x27;);
+a.mov64_imm (R.R0, 2);
+a.label (&#x27;target&#x27;);
+a.exit ();
+b = a.bytes ();
+assert (size (b), [4, 8]);
+assert (b(2, 3:4), uint8 ([1, 0]));       % skip one instruction
+assert (a.count (), 4);</pre>
+                          <p class="test-explain">汇编器最核心的能力：先发射带占位偏移的跳转，遇到 label 时记下当前槽位，
+最后在 <code>bytes()</code> 里回填。这段程序是
+<code>r0=1; if (r0==1) goto skip; r0=2; skip: exit</code>，共 4 条指令，
+跳转偏移应当是 1（跳过一条指令），<code>count()</code> 也应当是 4。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 15：未定义的标号会被报告</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（undefined labels are reported）</summary>
+                          <pre class="code-block">a = bpf.Asm ();
+a.jeq_imm (0, 0, &#x27;nowhere&#x27;);
+fail (&#x27;a.bytes ()&#x27;, &#x27;undefined label&#x27;);</pre>
+                          <p class="test-explain">引用了不存在的标号必须在生成时明确报错，否则得到的是一段跳到随机位置的程序。
+<code>fail()</code> 断言错误信息里包含 <code>undefined label</code>。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 16：记录 map 重定位</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（map relocations are recorded）</summary>
+                          <pre class="code-block">a = bpf.Asm ();
+a.ld_map_fd (1, &#x27;mymap&#x27;);
+a.exit ();
+r = a.relocations ();
+assert (numel (r), 1);
+assert (r(1).slot, 0);
+assert (r(1).sym, &#x27;mymap&#x27;);
+assert (strcmp (r(1).kind, &#x27;map_fd&#x27;));</pre>
+                          <p class="test-explain"><code>ld_map_fd</code> 除了写下两条指令，还要登记一条重定位：
+slot=0（第 0 个指令槽）、sym='mymap'、kind='map_fd'。
+<code>bpf.Elf</code> 随后会用 <code>slot*8</code> 作为 r_offset，
+指向符号表里的 map 符号，libbpf 由此知道该往哪个 imm 写 map fd。</p>
+                        </details>
+                        <q-separator></q-separator>
+                        <div id="tests_tst_btf" class="text-h4 q-ma-md text-primary">tst_btf.m —— BTF 编码</div>
+                        <p class="q-ma-md">验证 bpf.BtfBuilder 生成的 BTF 是否满足内核与 libbpf 的要求：类型大小、对齐、头字段、以及"生成 → 写文件 → 解析回来"的往返一致性。</p>
+                        <div class="text-h5 q-ma-md text-red-10">用例 1：整数类型带有正确的字节数与位宽</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（integer types carry the right size and bit width）</summary>
+                          <pre class="code-block">B = bpf.BtfBuilder ();
+i1 = B.add_int (&#x27;int&#x27;, 4, bpf.BtfBuilder.ENC_SIGNED);
+i8 = B.add_int (&#x27;unsigned long long&#x27;, 8, 0);
+assert (B.size_of (i1), 4);
+assert (B.size_of (i8), 8);
+assert (B.kind_of (i1), bpf.BtfBuilder.KIND_INT);
+assert (B.name_of (i8), &#x27;unsigned long long&#x27;);</pre>
+                          <p class="test-explain"><code>add_int</code> 返回类型编号，<code>size_of</code> 给出字节数，<code>kind_of</code> 给出 BTF kind
+（INT=1），<code>name_of</code> 能按名字偏移把字符串取回来。
+这条用例同时覆盖了字符串表的去重与"按偏移反查"两条路径。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 2：指针与数组</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（pointers and arrays）</summary>
+                          <pre class="code-block">B = bpf.BtfBuilder ();
+i4 = B.add_int (&#x27;int&#x27;, 4, 1);
+p = B.add_ptr (i4);
+a = B.add_array (i4, 4, i4);
+assert (B.size_of (p), 8);
+assert (B.size_of (a), 16);</pre>
+                          <p class="test-explain">指针在 BTF 里固定是 8 字节；数组的大小等于元素大小乘以元素个数（4×4=16）。
+数组的 <code>nelems</code> 正是 libbpf 读取 <code>__uint(type, ...)</code> 这类 map 属性的地方，
+所以这个数字不能出错。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 3：结构体按自然对齐排布</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（structures are laid out with natural alignment）</summary>
+                          <pre class="code-block">B = bpf.BtfBuilder ();
+u8 = B.add_int (&#x27;unsigned char&#x27;, 1, 0);
+u64 = B.add_int (&#x27;unsigned long long&#x27;, 8, 0);
+members = struct (&#x27;name&#x27;, {&#x27;a&#x27;, &#x27;b&#x27;}, &#x27;type&#x27;, {u8, u64});
+s = B.add_struct (&#x27;thing&#x27;, members);
+assert (B.size_of (s), 16);</pre>
+                          <p class="test-explain">成员 <code>{unsigned char a; unsigned long long b;}</code> 按 C 的自然对齐排布：
+a 在偏移 0，b 对齐到 8，结构体总大小 16。
+libbpf 依靠 BTF 成员的 bit offset 来定位 map 属性，偏移算错就会读出错的值。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 4：BTF 头与字符串表格式正确</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（the header and the string table are well formed）</summary>
+                          <pre class="code-block">B = bpf.BtfBuilder ();
+B.add_int (&#x27;int&#x27;, 4, 1);
+b = B.bytes ();
+assert (b(1), uint8 (0x9f));
+assert (b(2), uint8 (0xeb));
+assert (b(3), uint8 (1));            % version
+assert (double (bpf.bytes2num (b(5:8))), 24);  % hdr_len
+assert (double (bpf.bytes2num (b(9:12))), 0);  % type_off
+type_len = double (bpf.bytes2num (b(13:16)));
+str_off = double (bpf.bytes2num (b(17:20)));
+str_len = double (bpf.bytes2num (b(21:24)));
+assert (str_off, type_len);
+assert (numel (b), 24 + type_len + str_len);</pre>
+                          <p class="test-explain">直接检查 BTF 头的字节：魔数 0xeb9f 以小端存放（<code>0x9f 0xeb</code>）、version=1、
+hdr_len=24、type_off=0、str_off 紧接在类型段之后、总长度等于 24 + type_len + str_len。
+头写错的话内核在 BPF_BTF_LOAD 时会直接返回 EINVAL，而且往往连日志都不给。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 5：生成的对象 BTF 能被解析器读回</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（an object BTF round trips through the parser）</summary>
+                          <pre class="code-block">if (bpf.have_bpf ())
+  b = bpf.Builder (&#x27;GPL&#x27;);
+  b.map (&#x27;counts&#x27;, &#x27;array&#x27;, &#x27;u32&#x27;, &#x27;u64&#x27;, 8);
+  f = tempname ();
+  fid = fopen (f, &#x27;wb&#x27;); fwrite (fid, b.elf (), &#x27;uint8&#x27;); fclose (fid);
+  B = bpf.BTF.from_file (f);
+  unlink (f);
+  assert (B.type_cnt () &gt; 0);
+  id = B.find_by_name_kind (&#x27;counts&#x27;, bpf.BTF.KIND_VAR);
+  assert (id &gt; 0);
+endif</pre>
+                          <p class="test-explain">端到端自洽性测试：用 Builder 生成一个带 array map 的 ELF 镜像，写入临时文件，
+再用 libbpf 的 <code>btf__parse_elf()</code> 解析回来，确认能找到名为 counts 的 VAR 类型。
+若当前环境没有 eBPF 权限，整个用例会被跳过。</p>
+                        </details>
+                        <q-separator></q-separator>
+                        <div id="tests_tst_elf" class="text-h4 q-ma-md text-primary">tst_elf.m —— ELF 目标文件生成</div>
+                        <p class="q-ma-md">验证 bpf.Elf 产生的镜像在结构上是合法的 eBPF 目标文件，并且重定位、license、可复现性这些关键性质都成立。</p>
+                        <div class="text-h5 q-ma-md text-red-10">用例 1：ELF 头标识出 64 位小端 BPF 对象</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（the ELF header identifies a 64 bit little endian BPF object）</summary>
+                          <pre class="code-block">b = bpf.Builder (&#x27;GPL&#x27;);
+p = b.program (&#x27;kprobe/do_sys_openat2&#x27;, &#x27;hello&#x27;);
+p.mov64_imm (0, 0);
+p.exit ();
+img = b.elf ();
+assert (img(1:4), uint8 ([0x7f, double(&#x27;E&#x27;), double(&#x27;L&#x27;), double(&#x27;F&#x27;)]));
+assert (img(5), uint8 (2));                        % ELFCLASS64
+assert (img(6), uint8 (1));                        % ELFDATA2LSB
+assert (double (bpf.bytes2num (img(17:18))), 1);    % ET_REL
+assert (double (bpf.bytes2num (img(19:20))), 247);  % EM_BPF</pre>
+                          <p class="test-explain">检查 ELF 魔数 <code>0x7f 'E' 'L' 'F'</code>、ELFCLASS64=2、ELFDATA2LSB=1、
+e_type=ET_REL=1、e_machine=EM_BPF=247。
+这几个字段错任何一个，libbpf 都会以 "not a valid eBPF object file" 拒绝加载。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 2：每个生成的对象都带 license 段</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（every generated object has a license section）</summary>
+                          <pre class="code-block">b = bpf.Builder (&#x27;GPL&#x27;);
+p = b.program (&#x27;kprobe/x&#x27;, &#x27;x&#x27;);
+p.exit ();
+img = b.elf ();
+assert (numel (img) &gt; 64);</pre>
+                          <p class="test-explain">即使程序只有一条 exit，也必须生成 license 段——libbpf 强制要求，
+缺少时报 "missing license"。用例用镜像长度大于 64 字节（ELF 头长度）
+来粗略确认其它段确实被写了出来。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 3：引用 map 会产生重定位</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（a map reference produces a relocation）</summary>
+                          <pre class="code-block">b = bpf.Builder (&#x27;GPL&#x27;);
+b.map (&#x27;m&#x27;, &#x27;array&#x27;, &#x27;u32&#x27;, &#x27;u64&#x27;, 4);
+p = b.program (&#x27;kprobe/x&#x27;, &#x27;x&#x27;);
+p.ld_map_fd (1, &#x27;m&#x27;);
+p.exit ();
+img = b.elf ();
+assert (numel (img) &gt; 256);
+r = p.relocations ();
+assert (numel (r), 1);</pre>
+                          <p class="test-explain">引用 map 时必须生成 <code>.rel&lt;section&gt;</code> 段并登记一条重定位，
+否则 libbpf 找不到 map fd，程序里会残留 imm=0 的伪指令，加载后立刻崩。
+用例断言镜像确实变大，且 <code>relocations()</code> 恰好返回一条记录。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 4：license 字符串出现在镜像里</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（the license string ends up in the image）</summary>
+                          <pre class="code-block">b = bpf.Builder (&#x27;Dual BSD/GPL&#x27;);
+p = b.program (&#x27;kprobe/x&#x27;, &#x27;x&#x27;);
+p.exit ();
+img = b.elf ();
+txt = char (img);
+assert (! isempty (strfind (txt, &#x27;Dual BSD/GPL&#x27;)));</pre>
+                          <p class="test-explain">自定义的 license（这里是 <code>Dual BSD/GPL</code>）必须原样出现在镜像中，
+因为内核用它判断该程序是否允许调用 GPL-only 的 helper。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 5：引用不存在的 map 会报错</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（referencing an unknown map is an error）</summary>
+                          <pre class="code-block">b = bpf.Builder (&#x27;GPL&#x27;);
+p = b.program (&#x27;kprobe/x&#x27;, &#x27;x&#x27;);
+p.ld_map_fd (1, &#x27;nosuchmap&#x27;);
+p.exit ();
+fail (&#x27;b.elf ()&#x27;, &#x27;unknown map&#x27;);</pre>
+                          <p class="test-explain">如果程序引用了 Builder 里没有声明过的 map，必须立刻报错，
+而不是生成一个"要到加载时才失败"的镜像。错误信息里包含 <code>unknown map</code>。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 6：同一个 Builder 生成的镜像稳定可复现</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（the same builder produces a stable image）</summary>
+                          <pre class="code-block">b = bpf.Builder (&#x27;GPL&#x27;);
+b.map (&#x27;m&#x27;, &#x27;array&#x27;, &#x27;u32&#x27;, &#x27;u64&#x27;, 4);
+p = b.program (&#x27;kprobe/x&#x27;, &#x27;x&#x27;);
+p.ld_map_fd (1, &#x27;m&#x27;); p.exit ();
+assert (b.elf (), b.elf ());</pre>
+                          <p class="test-explain">同一个 Builder 连续两次 <code>elf()</code> 必须得到完全相同的字节。
+这说明生成过程没有隐藏状态（例如不稳定的哈希遍历顺序、时间戳等），
+也让"同样的源码生成同样的对象"成为可验证的性质。</p>
+                        </details>
+                        <q-separator></q-separator>
+                        <div id="tests_tst_map" class="text-h4 q-ma-md text-primary">tst_map.m —— eBPF map 操作</div>
+                        <p class="q-ma-md">真正与内核交互的一组用例：创建 map、读写元素、遍历、删除、回读内核信息。没有 eBPF 权限时会整体跳过。</p>
+                        <div class="text-h5 q-ma-md text-red-10">用例 1：array map 的值可以原样往返</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（array maps round trip values）</summary>
+                          <pre class="code-block">if (bpf.have_bpf ())
+  m = bpf.Map.create (&#x27;array&#x27;, 4, 8, 4, &#x27;octave_tst_array&#x27;);
+  assert (m.key_size (), 4);
+  assert (m.value_size (), 8);
+  assert (m.max_entries (), 4);
+  for k = 0:3
+    m.update (k, 1000 + k);
+  end
+  assert (m.lookup (2), uint64 (1002));
+  clear m
+endif</pre>
+                          <p class="test-explain">创建 array map（key 4 字节、value 8 字节、4 个条目），写入 0..3，再读回第 2 个。
+既验证了 <code>Map.create</code> 的参数确实传给了内核（key_size / value_size / max_entries），
+也验证了 8 字节的值会被还原成 uint64 而不是一串裸字节。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 2：hash map 支持删除与遍历</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（hash maps support removal and iteration）</summary>
+                          <pre class="code-block">if (bpf.have_bpf ())
+  m = bpf.Map.create (&#x27;hash&#x27;, 4, 8, 8, &#x27;octave_tst_hash&#x27;);
+  m.update (7, 42);
+  assert (m.lookup (7), uint64 (42));
+  assert (m.next_key (), uint32 (7));
+  m.remove (7);
+  assert (isempty (m.next_key ()));
+  clear m
+endif</pre>
+                          <p class="test-explain">hash map 支持删除与遍历（array map 不支持删除）。写入 key=7 之后，
+从"空 key"开始调用 <code>next_key()</code> 枚举得到 7；删除后再枚举应当返回空。
+这条用例覆盖了 BPF_MAP_GET_NEXT_KEY 的两种调用方式与 ENOENT 的处理。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 3：原始字节访问</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（raw byte access）</summary>
+                          <pre class="code-block">if (bpf.have_bpf ())
+  m = bpf.Map.create (&#x27;array&#x27;, 4, 8, 1, &#x27;octave_tst_raw&#x27;);
+  m.update (0, uint8 (1:8));
+  assert (m.lookup (0, &#x27;raw&#x27;), uint8 (1:8));
+  clear m
+endif</pre>
+                          <p class="test-explain">用 <code>uint8(1:8)</code> 直接写 8 字节 value，再以 <code>'raw'</code> 模式读回完全相同的字节。
+这条保证二进制数据在往返过程中不会被数值转换破坏——对于存放结构体或
+网络包内容的 map，这是必须的。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 4：内核把 map 信息报告回来</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（the kernel reports the map back）</summary>
+                          <pre class="code-block">if (bpf.have_bpf ())
+  m = bpf.Map.create (&#x27;array&#x27;, 4, 4, 3, &#x27;octave_tst_info&#x27;);
+  i = m.info ();
+  assert (i.type, bpf.map_type (&#x27;array&#x27;));
+  assert (i.max_entries, 3);
+  assert (strcmp (i.name, &#x27;octave_tst_info&#x27;));
+  clear m
+endif</pre>
+                          <p class="test-explain"><code>BPF_OBJ_GET_INFO_BY_FD</code> 把内核真正创建出来的 map 信息读回 Octave：
+类型、max_entries、名字。它证明前面的参数确实到达了内核，
+而不只是在用户态记录了一份"我以为创建了什么"的副本。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 5：字节转换助手</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（byte conversion helpers）</summary>
+                          <pre class="code-block">assert (bpf.num2bytes (1, 4), uint8 ([1 0 0 0]));
+assert (bpf.num2bytes (uint32 (258), 4), uint8 ([2 1 0 0]));
+assert (bpf.bytes2num (uint8 ([2 1 0 0])), uint32 (258));
+assert (double (bpf.bytes2num (uint8 ([2 1 0 0]))), 258);
+assert (bpf.bytes2num (uint8 ([0xff 0xff 0xff 0xff]), true), int32 (-1));
+assert (bpf.bytes2num (uint8 ([])), []);</pre>
+                          <p class="test-explain">字节序与符号处理：<code>num2bytes(1,4)</code> 得到 <code>[1 0 0 0]</code>（小端）、
+258 得到 <code>[2 1 0 0]</code>、反向还原为 uint32(258)、
+int32 补码还原为 -1、空输入返回空。
+这两个助手是 map 读写与 BTF/ELF 编码的共同基础。</p>
+                        </details>
+                        <q-separator></q-separator>
+                        <div id="tests_tst_object" class="text-h4 q-ma-md text-primary">tst_object.m —— 对象加载与运行</div>
+                        <p class="q-ma-md">把前面所有环节串起来的集成测试：编写程序、生成镜像、加载、运行、读取结果，以及错误路径（非法指令、非法镜像）的表现。</p>
+                        <div class="text-h5 q-ma-md text-red-10">用例 1：XDP 程序加载并通过 BPF_PROG_TEST_RUN 运行</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（an XDP program loads and runs through BPF_PROG_TEST_RUN）</summary>
+                          <pre class="code-block">if (bpf.have_bpf ())
+  R = bpf.regs ();
+  b = bpf.Builder (&#x27;GPL&#x27;);
+  b.map (&#x27;hits&#x27;, &#x27;array&#x27;, &#x27;u32&#x27;, &#x27;u64&#x27;, 1);
+  p = b.program (&#x27;xdp&#x27;, &#x27;counter&#x27;);
+  p.st_w (R.R10, -4, 0);
+  p.ld_map_fd (R.R1, &#x27;hits&#x27;);
+  p.mov64_reg (R.R2, R.R10);
+  p.add64_imm (R.R2, -4);
+  p.call (bpf.helper (&#x27;map_lookup_elem&#x27;));
+  p.jeq_imm (R.R0, 0, &#x27;done&#x27;);
+  p.mov64_imm (R.R1, 1);
+  p.atomic_dw (R.R0, R.R1, 0, bpf.atomic_op (&#x27;add&#x27;));
+  p.label (&#x27;done&#x27;);
+  p.mov64_imm (R.R0, 2);
+  p.exit ();
+
+  obj = b.build ();
+  obj.load ();
+  prog = obj.find_program (&#x27;counter&#x27;);
+  r = prog.test_run (uint8 (zeros (1, 100)));
+  assert (r.retval, 2);
+  assert (obj.find_map (&#x27;hits&#x27;).lookup (0), uint64 (1));
+  clear obj
+endif</pre>
+                          <p class="test-explain">整套流程的集成测试：用 Octave 写一个 XDP 程序（把 map 里的计数加 1，然后返回 XDP_PASS=2），
+生成 ELF、加载，再用 BPF_PROG_TEST_RUN 从用户态喂进一个 100 字节的包，
+断言返回值是 2、且 map 里的计数变成了 1。
+这是"用 Octave 写 eBPF 程序"最直接的证明：指令、BTF、ELF、加载、运行全部由 Octave 完成。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 2：被拒绝的程序会给出校验器日志</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（a rejected program reports the verifier log）</summary>
+                          <pre class="code-block">if (bpf.have_bpf ())
+  b = bpf.Builder (&#x27;GPL&#x27;);
+  p = b.program (&#x27;xdp&#x27;, &#x27;bad&#x27;);
+  p.ldx_dw (0, 1, 0);         % 8 byte load from an XDP context: invalid
+  p.exit ();
+  obj = b.build ();
+  obj.set_log (65536);
+  failed = false;
+  try
+    obj.load ();
+  catch
+    failed = true;
+  end
+  assert (failed);
+  clear obj
+endif</pre>
+                          <p class="test-explain">故意写一条非法指令（对 XDP 上下文做 8 字节加载），确认加载失败会抛出异常而不是静默成功。
+加载之前已经用 <code>obj.set_log()</code> 挂上了日志缓冲区，
+所以 <code>obj.get_log('bad')</code> 能拿到内核校验器的完整输出，
+这正是排查"程序为什么加载不了"的标准手段。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 3：对象元信息可见</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（object metadata is exposed）</summary>
+                          <pre class="code-block">if (bpf.have_bpf ())
+  b = bpf.Builder (&#x27;GPL&#x27;);
+  b.map (&#x27;m&#x27;, &#x27;array&#x27;, &#x27;u32&#x27;, &#x27;u64&#x27;, 2);
+  p = b.program (&#x27;xdp&#x27;, &#x27;x&#x27;);
+  p.mov64_imm (0, 2);
+  p.exit ();
+  obj = b.build ();
+  assert (numel (obj.program_names ()), 1);
+  assert (strcmp (obj.program_names (){1}, &#x27;x&#x27;));
+  assert (strcmp (obj.map_names (){1}, &#x27;m&#x27;));
+  clear obj
+endif</pre>
+                          <p class="test-explain">加载后能正确枚举对象内部的程序名与 map 名（<code>program_names</code> /
+<code>map_names</code>），这是后续 <code>find_program</code> / <code>find_map</code>
+以及 <code>attach_all</code> 的基础。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 4：无效的内存镜像会被拒绝</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（an invalid in-memory image is rejected）</summary>
+                          <pre class="code-block">fail (&#x27;bpf.Object.from_mem (uint8 (1:32), &#x27;&#x27;junk&#x27;&#x27;)&#x27;, &#x27;libbpf&#x27;);</pre>
+                          <p class="test-explain">把 32 个随机字节当作 ELF 传进 <code>bpf.Object.from_mem</code>，必须报错，
+且错误信息以 <code>libbpf:</code> 开头。
+这条覆盖了错误路径，确保无效输入不会让进程崩溃。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 5：Builder 的元信息</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（builder metadata）</summary>
+                          <pre class="code-block">b = bpf.Builder (&#x27;GPL&#x27;);
+b.map (&#x27;a&#x27;, &#x27;array&#x27;, &#x27;u32&#x27;, &#x27;u64&#x27;, 1);
+b.map (&#x27;b&#x27;, &#x27;hash&#x27;, &#x27;u32&#x27;, &#x27;u32&#x27;, 4);
+assert (b.map_names (), {&#x27;a&#x27;, &#x27;b&#x27;});
+m = b.find_map (&#x27;b&#x27;);
+assert (strcmp (m.type_name, &#x27;BPF_MAP_TYPE_HASH&#x27;));
+assert (m.max_entries, 4);</pre>
+                          <p class="test-explain">不生成镜像也能查询 Builder 的内容：<code>map_names</code> 的顺序与声明顺序一致
+（<code>{'a','b'}</code>），<code>find_map</code> 能取回类型名与 max_entries。
+这一部分完全在用户态运行，不需要任何特权。</p>
+                        </details>
+                        <q-separator></q-separator>
+                        <div id="tests_tst_misc" class="text-h4 q-ma-md text-primary">tst_misc.m —— 环境、枚举与工具</div>
+                        <p class="q-ma-md">版本、命令表、枚举查询、寄存器表、helper 表、日志捕获与 CPU 数量等外围但每天都在用的接口。</p>
+                        <div class="text-h5 q-ma-md text-red-10">用例 1：报告 libbpf 版本</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（libbpf version is reported）</summary>
+                          <pre class="code-block">v = bpf.version ();
+assert (v.major, 1);
+assert (v.minor &gt;= 0);
+assert (ischar (v.string));</pre>
+                          <p class="test-explain"><code>bpf.version()</code> 返回 major / minor / string。
+断言 major == 1 是因为 libbpf 1.x 的公开 ABI 稳定；minor 只要求 &gt;= 0，
+这样同一个包既能跑在 1.6 上，也能跑在更新的共享库上。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 2：命令表完整且有序</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（the command list is complete and sorted）</summary>
+                          <pre class="code-block">c = bpf.commands ();
+assert (iscellstr (c));
+assert (numel (c) &gt; 100);
+assert (strcmp (c{1}, sort (c){1}));
+assert (any (strcmp (c, &#x27;object_load&#x27;)));</pre>
+                          <p class="test-explain"><code>bpf.commands()</code> 必须返回排序过的 cellstr，数量大于 100（当前 182），
+并且包含 <code>object_load</code> 这样的关键命令。
+它同时充当"oct 文件是否成功加载、命令表是否完整"的哨兵用例。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 3：指针与返回值的约定</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（pointer conventions）</summary>
+                          <pre class="code-block">assert (isstruct (bpf.raw (&#x27;version&#x27;)));</pre>
+                          <p class="test-explain"><code>bpf.raw</code> 是所有底层命令的统一入口，
+这里用 <code>version</code> 验证"调用 → 返回 Octave 结构体"这条通路工作正常。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 4：枚举查询同时接受名字与编号</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（enumeration lookups accept names and numbers）</summary>
+                          <pre class="code-block">assert (bpf.map_type (2), 2);
+[v, n] = bpf.map_type (2);
+assert (v, 2);
+assert (strcmp (n, &#x27;BPF_MAP_TYPE_ARRAY&#x27;));
+assert (bpf.map_type (&#x27;ringbuf&#x27;), 27);
+assert (bpf.prog_type (&#x27;xdp&#x27;), 6);
+assert (bpf.link_type (&#x27;tracing&#x27;) &gt; 0);
+fail (&#x27;bpf.map_type (&#x27;&#x27;not_a_map_type&#x27;&#x27;)&#x27;, &#x27;unknown bpf_map_type name&#x27;);</pre>
+                          <p class="test-explain">编号与名字都能查询，名字可长可短；第二个输出给出规范名；
+不存在的名字必须报错（信息形如 <code>unknown bpf_map_type name ...</code>）。
+另外注意这里把名字放在第二个输出而不是结构体字段里，
+是因为 Octave 无法解析 <code>bpf.map_type(x).field</code> 这种"包函数调用后紧跟字段"的写法。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 5：寄存器表</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（register table）</summary>
+                          <pre class="code-block">R = bpf.regs ();
+assert (R.R0, 0);
+assert (R.R10, 10);
+assert (R.FP, 10);</pre>
+                          <p class="test-explain"><code>bpf.regs()</code> 给出 r0…r10，并额外提供 FP=10（帧指针）与 RET=0（返回值寄存器）
+两个别名，让汇编代码更接近内核文档里的写法。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 6：helper 表完整</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（helper table completeness）</summary>
+                          <pre class="code-block">assert (numel (fieldnames (bpf.helper_table ())) &gt; 200);
+assert (bpf.helper (1), 1);</pre>
+                          <p class="test-explain">helper 表由 libbpf 的 <code>bpf_helper_defs.h</code> 生成，断言字段数大于 200（当前 211）。
+将来升级 libbpf 头文件时，这条用例会提醒重新生成表格。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 7：日志捕获可以打开与清空</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（log capture can be enabled and cleared）</summary>
+                          <pre class="code-block">bpf.capture (true);
+bpf.get_log (&#x27;clear&#x27;);
+assert (ischar (bpf.get_log ()));</pre>
+                          <p class="test-explain">捕获开关与清空操作都能正常工作，清空之后 <code>bpf.get_log()</code> 仍然返回字符串（可能为空）。
+调试加载失败时依赖这条通路，所以它本身也要有测试。</p>
+                        </details>
+                        <div class="text-h5 q-ma-md text-red-10">用例 8：CPU 数量</div>
+                        <details class="q-ma-md test-detail" open>
+                          <summary>原始用例（number of cpus）</summary>
+                          <pre class="code-block">assert (bpf.num_cpus () &gt;= 1);</pre>
+                          <p class="test-explain"><code>bpf.num_cpus()</code> 返回 possible CPU 数量，per-CPU map 需要用它来分配 value 空间，
+因此必须大于等于 1。</p>
+                        </details>
+                        <q-separator></q-separator>
+
+                        <div id="references" class="title1 q-ma-md text-primary">引用octave_libbpf</div>
+                        <div class="text-h5 q-ma-md text-red-10">如果你在学术研究中涉及octave_libbpf，那么可以按需引用以下内容。</div>
+                        <div class="text-h5 q-ma-md text-red-10">octave_libbpf源码(BibTeX)</div>
+                        <p class="q-ma-md">@misc{octave_libbpf2026,
+                            author = {Yu Hongbo, },
+                            title = {octave_libbpf},
+                            year = {2026},
+                            howpublished = {\url{https://github.com/CNOCTAVE/octave_libbpf}},
+                          }</p>
+                        <div class="text-h5 q-ma-md text-red-10">octave_libbpf文档(BibTeX)</div>
+                        <p class="q-ma-md">@techreport{octave_libbpf2026doc,
+                            author = {Yu Hongbo, },
+                            title = {octave_libbpf Document},
+                            year = {2026},
+                            number = {5},
+                            month = {10},
+                            url = {https://cnoctave.github.io/octave_libbpf/index.html},
+                            urldate = {2026-10-05},
+                          }</p>
+                        <div class="text-h5 q-ma-md text-red-10">相关软件(BibTeX)</div>
+                        <p class="q-ma-md">@misc{libbpf,
+                            author = {The libbpf authors, },
+                            title = {libbpf: BPF CO-RE based loader library},
+                            howpublished = {\url{https://github.com/libbpf/libbpf}},
+                          }</p>
+                    </div>
+                </div>
+                <q-toolbar class="bg-grey-8 text-white q-my-md shadow-2">
+                    <q-btn-dropdown stretch flat label="版权所有 ©">
+                      <q-list>
+                        <q-item clickable v-close-popup @click="goTo('http://cnoctave.top')">
+                          <q-item-section>
+                            <q-item-label>© 2024-2026 CNOCTAVE</q-item-label>
+                          </q-item-section>
+                        </q-item>
+                        <q-item clickable v-close-popup @click="goTo('https://github.com/CNOCTAVE/octave_libbpf')">
+                          <q-item-section>
+                            <q-item-label>© 2024-2026 Yu Hongbo</q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </q-list>
+                    </q-btn-dropdown>
+                    <q-separator dark vertical></q-separator>
+                    <q-btn stretch flat label="此文档受Creative Commons Attribution-NoDerivatives 4.0 International License协议保护。"
+                    @click="goTo('https://creativecommons.org/licenses/by-nd/4.0/')"></q-btn>
+                    <q-separator dark vertical></q-separator>
+                    <q-btn stretch flat label="下载此文档的源码"
+                    @click="goTo('https://github.com/CNOCTAVE/octave_libbpf')"></q-btn>
+                </q-toolbar>
+            </q-page-container>
+
+        </q-layout>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quasar@2.17.0/dist/quasar.umd.prod.js"></script>
+    <script>
+
+        const App = {
+            data() {
+                return {
+                    scrollToTop() {
+                        window.scrollTo(0, 0);
+                    },
+                    goTo(target) {
+                        window.open(target, '_blank');
+                    },
+                    goToID(target) {
+                        window.open(target, '_self');
+                    },
+                    leftDrawerOpen: true,
+                };
+            },
+        };
+        function toggleAllTests(open) {
+            document.querySelectorAll('details.test-detail').forEach(function (d) {
+                d.open = open;
+            });
+        }
+
+        const app = Vue.createApp(App);
+
+        app.use(Quasar)
+        app.mount('#q-app')
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+Summary of important user-visible changes for octave_libbpf 0.1.0
+-------------------------------------------------------------------
+
+ ** Initial release.
+
+    - Low level oct-file binding (libbpf_wrap) covering bpf_object,
+      bpf_program, bpf_map, bpf_link, bpf_btf, bpf_dump, ring_buffer,
+      perf_buffer and the "low level" bpf_*() syscall wrappers of libbpf.
+
+    - Procedural m-code API (bpf_*) on top of the oct-file.
+
+    - Pure m-code eBPF authoring toolchain:
+        * bpf.Insn   - eBPF instruction encoder for the complete ISA
+        * bpf.Asm    - assembler with labels, helpers and map references
+        * bpf.Btf    - BTF (BPF Type Format) encoder
+        * bpf.Elf    - ELF64/BPF relocatable object writer
+        * bpf.Builder- front end that ties programs, maps and globals together
+
+    - Object oriented API: bpf.Object, bpf.Program, bpf.Map, bpf.Link,
+      bpf.RingBuf, bpf.PerfBuf, bpf.BTF.
+
+    - Examples and a test-suite that load and attach real eBPF programs.

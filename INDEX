@@ -1,0 +1,40 @@
+octave_libbpf
+eBPF authoring in Octave
+  bpf.Builder
+  bpf.Asm
+  bpf.Insn
+  bpf.MapDef
+  bpf.Elf
+  bpf.BtfBuilder
+  bpf.regs
+  bpf.helper
+  bpf.atomic_op
+Object model
+  bpf.Object
+  bpf.Program
+  bpf.Map
+  bpf.Link
+  bpf.RingBuf
+  bpf.PerfBuf
+  bpf.BTF
+Kernel enumeration and helpers
+  bpf.map_type
+  bpf.prog_type
+  bpf.attach_type
+  bpf.link_type
+  bpf.enum_lookup
+  bpf.bytes2num
+  bpf.num2bytes
+Environment
+  bpf.version
+  bpf.commands
+  bpf.raw
+  bpf.probe
+  bpf.have_bpf
+  bpf.num_cpus
+  bpf.set_print
+  bpf.capture
+  bpf.get_log
+  bpf.memlock
+High level entry points
+  bpf.load_object
