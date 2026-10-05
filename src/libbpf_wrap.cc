@@ -28,6 +28,7 @@
 #include <mutex>
 #include <string>
 #include <vector>
+#include <type_traits>
 
 #include <octave/oct.h>
 #include <octave/Cell.h>
@@ -1410,6 +1411,86 @@ HANDLER (h_program_attach_usdt)
   RET (u64v (reinterpret_cast<uint64_t> (l)));
 }
 
+// ---------------------------------------------------------------------------
+// Compile-time feature probes.
+//
+// This wrapper is built against whatever libbpf happens to be installed on the
+// build host.  Some struct fields / entry points only exist in newer or custom
+// libbpf builds -- e.g. bpf_perf_event_opts.dont_enable was added in libbpf
+// 1.5, and bpf_program__attach_tracing_multi() together with struct
+// bpf_tracing_multi_opts are provided by the custom tracing-multi libbpf used
+// by this project.  Rather than failing to compile on older distro packages
+// (Ubuntu's apt libbpf-dev, for instance), we probe the headers we are actually
+// compiled against and degrade those features gracefully.  The corresponding
+// entry points are already declared weak elsewhere, so the runtime probe in
+// each handler still reports "not available" when the shared object lacks them.
+// ---------------------------------------------------------------------------
+
+// Does struct bpf_perf_event_opts contain the dont_enable field?
+template <typename T>
+auto libbpf_has_perf_dont_enable (int)
+  -> decltype (static_cast<void> (static_cast<T *> (nullptr)->dont_enable),
+               std::true_type {});
+template <typename T>
+auto libbpf_has_perf_dont_enable (...)
+  -> std::false_type;
+
+// Is struct bpf_tracing_multi_opts a complete type (custom tracing-multi
+// libbpf)?  When it is only forward-declared (or absent entirely) sizeof fails
+// and we fall back to the false overload.
+template <typename T>
+auto libbpf_tracing_multi_complete (int)
+  -> decltype (static_cast<void> (sizeof (T)), std::true_type {});
+template <typename T>
+auto libbpf_tracing_multi_complete (...)
+  -> std::false_type;
+
+using perf_dont_enable_available =
+  decltype (libbpf_has_perf_dont_enable<struct bpf_perf_event_opts> (0));
+using tracing_multi_available =
+  decltype (libbpf_tracing_multi_complete<struct bpf_tracing_multi_opts> (0));
+
+// Set bpf_perf_event_opts.dont_enable only when the field exists in the headers
+// we were compiled against (libbpf >= 1.5).  The actual field access lives in a
+// template whose type parameter T is the opts struct, which makes the body
+// dependent and defers its compilation; the overload is only ever instantiated
+// for the std::true_type tag (i.e. when the probe below says the field exists),
+// so building against an older libbpf that lacks it is fine.
+inline void
+set_perf_dont_enable (struct bpf_perf_event_opts&, bool, std::false_type) { }
+
+template <typename T = struct bpf_perf_event_opts>
+inline void
+set_perf_dont_enable (T& o, bool v, std::true_type)
+{
+  o.dont_enable = v;
+}
+
+// Perform the tracing-multi attach.  The struct type is carried as a template
+// parameter so the body that names struct bpf_tracing_multi_opts is dependent
+// and only compiled when this overload is actually instantiated -- which only
+// happens for the std::true_type tag (set when the struct is a complete type).
+// Against a stock libbpf that lacks it, the std::false_type overload is chosen
+// and returns nullptr; the handler then reports the feature as unavailable.
+inline struct bpf_link *
+do_attach_tracing_multi (struct bpf_program *, const char *, std::false_type)
+{
+  return nullptr;
+}
+
+template <typename T = struct bpf_tracing_multi_opts>
+inline struct bpf_link *
+do_attach_tracing_multi (struct bpf_program *p, const char *pattern,
+                         std::true_type)
+{
+  T o;
+  std::memset (&o, 0, sizeof (o));
+  o.sz = sizeof (o);
+  return static_cast<struct bpf_link *> (
+    PTR_CHECK (bpf_program__attach_tracing_multi (p, pattern, &o),
+               "attach_tracing_multi"));
+}
+
 HANDLER (h_program_attach_perf_event)
 {
   struct bpf_program *p =
@@ -1421,7 +1502,8 @@ HANDLER (h_program_attach_perf_event)
   o.sz = sizeof (o);
   o.bpf_cookie = static_cast<__u64> (opts.num ("bpf_cookie", 0));
   o.force_ioctl_attach = opts.flag ("force_ioctl_attach", false);
-  o.dont_enable = opts.flag ("dont_enable", false);
+  set_perf_dont_enable (
+      o, opts.flag ("dont_enable", false), perf_dont_enable_available {});
   struct bpf_link *l = static_cast<struct bpf_link *> (
     PTR_CHECK (bpf_program__attach_perf_event_opts (p, pfd, &o), "attach_perf_event"));
   reg_add (l, "link");
@@ -1453,13 +1535,11 @@ HANDLER (h_program_attach_tracing_multi)
   string pattern = opt_str (a, 1, "");
   if (! bpf_program__attach_tracing_multi)
     fail ("attach_tracing_multi is not available in this libbpf version");
-  struct bpf_tracing_multi_opts o;
-  std::memset (&o, 0, sizeof (o));
-  o.sz = sizeof (o);
-  struct bpf_link *l = static_cast<struct bpf_link *> (
-    PTR_CHECK (bpf_program__attach_tracing_multi (p, pattern.empty () ? nullptr
-                                                                      : pattern.c_str (), &o),
-               "attach_tracing_multi"));
+  struct bpf_link *l = do_attach_tracing_multi (
+      p, pattern.empty () ? nullptr : pattern.c_str (),
+      tracing_multi_available {});
+  if (! l)
+    fail ("attach_tracing_multi failed (tracing-multi support may be missing)");
   reg_add (l, "link");
   RET (u64v (reinterpret_cast<uint64_t> (l)));
 }
