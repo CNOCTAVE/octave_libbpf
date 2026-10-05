@@ -1,4 +1,9 @@
-Summary of important user-visible changes for octave_libbpf 0.1.0
+Summary of important user-visible changes for octave_libbpf 1.0.0
+-------------------------------------------------------------------
+
+ ** 1.0.0
+
+    - Add citation
 -------------------------------------------------------------------
 
  ** Initial release.

@@ -71,7 +71,7 @@ Check out document: [octave_libbpf Document](https://cnoctave.github.io/octave_l
 ## Installation
 
 ```sh
-octave --eval "pkg install octave_libbpf-0.1.0.tar.gz"
+octave --eval "pkg install octave_libbpf-1.0.0.tar.gz"
 octave --eval "pkg load octave_libbpf; demo_octave_libbpf"
 ```
 

@@ -23,4 +23,4 @@ jobs:
       # uncomment this on demand
       - run: sudo chmod -R a+x octave_libbpf/inst
       - run: tar --warning=no-file-changed --exclude='octave_libbpf/.git' --exclude='octave_libbpf/.github' -czvf octave_libbpf.tar.gz octave_libbpf
-      - run: gh release upload 0.1.0 octave_libbpf.tar.gz --repo $GITHUB_REPOSITORY
+      - run: gh release upload 1.0.0 octave_libbpf.tar.gz --repo $GITHUB_REPOSITORY

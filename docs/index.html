@@ -228,16 +228,16 @@ without any warranty.
                         <p class="q-ma-md">octave_libbpf 发布到 Octave Forge 软件源之后，可以通过 Octave 软件源安装。</p>
                         <div class="text-h5 q-ma-md text-red-10">通过Octave软件源安装octave_libbpf，代码如下：</div>
                         <p class="q-ma-md">&gt;&gt; pkg install -forge octave_libbpf</p>
-                        <div class="text-h5 q-ma-md text-red-10">注意：截至 0.1.0 版本，octave_libbpf 尚未进入 Octave Forge 软件源，
+                        <div class="text-h5 q-ma-md text-red-10">注意：截至 1.0.0 版本，octave_libbpf 尚未进入 Octave Forge 软件源，
                             请使用下面的“在线安装”或“源码安装”方式。</div>
                         <q-separator></q-separator>
 
                         <div id="online_install" class="title1 q-ma-md text-primary">在线安装</div>
                         <p class="q-ma-md">octave_libbpf 可以在线安装，也可以用已经打包好的 tar.gz 安装包本地安装。</p>
                         <div class="text-h5 q-ma-md text-red-10">在线安装octave_libbpf，代码如下：</div>
-                        <p class="q-ma-md">&gt;&gt; pkg install 'https://github.com/CNOCTAVE/octave_libbpf/releases/download/0.1.0/octave_libbpf-0.1.0.tar.gz'</p>
-                        <div class="text-h5 q-ma-md text-red-10">本地安装octave_libbpf-0.1.0.tar.gz，代码如下：</div>
-                        <p class="q-ma-md">&gt;&gt; pkg install octave_libbpf-0.1.0.tar.gz</p>
+                        <p class="q-ma-md">&gt;&gt; pkg install 'https://github.com/CNOCTAVE/octave_libbpf/releases/download/1.0.0/octave_libbpf-1.0.0.tar.gz'</p>
+                        <div class="text-h5 q-ma-md text-red-10">本地安装octave_libbpf-1.0.0.tar.gz，代码如下：</div>
+                        <p class="q-ma-md">&gt;&gt; pkg install octave_libbpf-1.0.0.tar.gz</p>
                         <div class="text-h5 q-ma-md text-red-10">安装过程中会在 src 目录中自动探测 libbpf 的头文件与共享库，并编译 oct 文件。</div>
                         <q-separator></q-separator>
 
@@ -246,7 +246,7 @@ without any warranty.
                         <div class="text-h5 q-ma-md text-red-10">构建 oct 文件：</div>
                         <p class="q-ma-md">$ make -C octave_libbpf/src</p>
                         <div class="text-h5 q-ma-md text-red-10">打包、安装并运行测试：</div>
-                        <p class="q-ma-md">$ make dist      # 生成 ../octave_libbpf-0.1.0.tar.gz</p>
+                        <p class="q-ma-md">$ make dist      # 生成 ../octave_libbpf-1.0.0.tar.gz</p>
                         <p class="q-ma-md">$ make install   # 对该 tar 包执行 pkg install</p>
                         <p class="q-ma-md">$ make test      # 安装并执行 pkg test octave_libbpf</p>
                         <div class="text-h5 q-ma-md text-red-10">如果不想安装，也可以直接把源码树加入搜索路径：</div>
@@ -1325,11 +1325,22 @@ assert (ischar (bpf.get_log ()));</pre>
                             url = {https://cnoctave.github.io/octave_libbpf/index.html},
                             urldate = {2026-10-05},
                           }</p>
-                        <div class="text-h5 q-ma-md text-red-10">相关软件(BibTeX)</div>
+                        <div class="text-h5 q-ma-md text-red-10">libbpf(BibTeX)</div>
                         <p class="q-ma-md">@misc{libbpf,
                             author = {The libbpf authors, },
                             title = {libbpf: BPF CO-RE based loader library},
                             howpublished = {\url{https://github.com/libbpf/libbpf}},
+                          }</p>
+                        <div class="text-h5 q-ma-md text-red-10">octave_libbpf: Authoring, Loading, and Driving eBPF Programs from GNU Octave(BibTeX)</div>
+                        <p class="q-ma-md">@article{https://doi.org/10.31224/8453,
+                            doi = {10.31224/8453},
+                            url = {https://engrxiv.org/preprint/view/8453},
+                            author = {Yu Hongbo, },
+                            keywords = {eBPF, BPF, GNU Octave, libbpf, Artificial Intelligence, Driver Engineering, Network Programming},
+                            title = {octave_libbpf: Authoring, Loading, and Driving eBPF Programs from GNU Octave},
+                            publisher = {engrxiv},
+                            year = {2026},
+                            copyright = {Creative Commons Attribution 4.0 International},
                           }</p>
                     </div>
                 </div>

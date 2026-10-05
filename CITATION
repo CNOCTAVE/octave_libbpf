@@ -1,0 +1,13 @@
+引用octave_libbpf
+如果你在学术研究中涉及octave_libbpf，那么可以按需引用以下内容。
+octave_libbpf源码(BibTeX)
+@misc{octave_libbpf2026, author = {Yu Hongbo, }, title = {octave_libbpf}, year = {2026}, howpublished = {\url{https://github.com/CNOCTAVE/octave_libbpf}}, }
+
+octave_libbpf文档(BibTeX)
+@techreport{octave_libbpf2026doc, author = {Yu Hongbo, }, title = {octave_libbpf Document}, year = {2026}, number = {5}, month = {10}, url = {https://cnoctave.github.io/octave_libbpf/index.html}, urldate = {2026-10-05}, }
+
+libbpf(BibTeX)
+@misc{libbpf, author = {The libbpf authors, }, title = {libbpf: BPF CO-RE based loader library}, howpublished = {\url{https://github.com/libbpf/libbpf}}, }
+
+octave_libbpf: Authoring, Loading, and Driving eBPF Programs from GNU Octave(BibTeX)
+@article{https://doi.org/10.31224/8453, doi = {10.31224/8453}, url = {https://engrxiv.org/preprint/view/8453}, author = {Yu Hongbo, }, keywords = {eBPF, BPF, GNU Octave, libbpf, Artificial Intelligence, Driver Engineering, Network Programming}, title = {octave_libbpf: Authoring, Loading, and Driving eBPF Programs from GNU Octave}, publisher = {engrxiv}, year = {2026}, copyright = {Creative Commons Attribution 4.0 International}, }
